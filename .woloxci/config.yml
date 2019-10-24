@@ -11,8 +11,6 @@ steps:
     - cp -r $NODE_PATH/ ./
   lint:
     - npm run lint
-  test:
-    - npm run test
 
 environment:
   GIT_COMMITTER_NAME: a
