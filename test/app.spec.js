@@ -1,11 +1,12 @@
 'use strict';
+/* eslint-disable global-require */
 
 const { host } = require('../config').common.redisCache;
 
-const fs = require('fs'),
-  models = require('../app/models'),
-  path = require('path'),
-  RedisClient = require('redis');
+const fs = require('fs');
+const models = require('../app/models');
+const path = require('path');
+const RedisClient = require('redis');
 
 const tables = Object.values(models.sequelize.models);
 

@@ -1,5 +1,5 @@
-const { PubSub } = require('apollo-server'),
-  pubsub = new PubSub();
+const { PubSub } = require('apollo-server');
+const pubsub = new PubSub();
 
 const createEvent = (eventId, publishFunction) => ({
   iter: () => pubsub.asyncIterator(eventId),

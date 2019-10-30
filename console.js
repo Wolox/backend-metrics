@@ -1,7 +1,8 @@
-const repl = require('repl'),
-  fs = require('fs'),
-  models = require('./app/models'),
-  pjson = require('./package.json');
+/* eslint-disable global-require */
+const repl = require('repl');
+const fs = require('fs');
+const models = require('./app/models');
+const pjson = require('./package.json');
 
 const convertFunctionToAsync = f => async (...args) => {
   const result = await f(...args);

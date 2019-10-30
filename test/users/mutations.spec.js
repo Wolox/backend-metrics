@@ -1,6 +1,6 @@
-const { mutate } = require('../server.spec'),
-  { createUser } = require('./graphql'),
-  userFactory = require('../factories/user');
+const { mutate } = require('../server.spec');
+const { createUser } = require('./graphql');
+const userFactory = require('../factories/user');
 
 describe('users', () => {
   describe('mutations', () => {

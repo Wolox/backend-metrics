@@ -1,5 +1,5 @@
-const userFactory = require('../factories/user'),
-  { Mutation: mutations } = require('../../app/graphql/users/resolvers');
+const userFactory = require('../factories/user');
+const { Mutation: mutations } = require('../../app/graphql/users/resolvers');
 
 describe('users', () => {
   describe('resolvers', () => {
