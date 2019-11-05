@@ -3,45 +3,39 @@ const { GraphQLString } = require('graphql');
 const { gitStatsByTech } = require('./types');
 const api = 'https://node-github-stats.herokuapp.com/graphql';
 
-const getAvgPickUpTime = async (hasArgs, args) => {
-  let query = 'query{stats {\
-    pr_pick_up_time_avg {\
+const generateGitStatsArgsString = args => {
+  let stringArgs = '';
+  Object.keys(args).forEach(key => {
+    const auxString = `${key}: "${args[key]}"`;
+    if (stringArgs === '') {
+      stringArgs = stringArgs.concat(auxString);
+    }
+    else stringArgs = stringArgs.concat(', ', auxString);
+  });
+  return stringArgs;
+};
+
+const getAvgPickUpTime = async (args) => {
+  const argsString = generateGitStatsArgsString(args || {});
+  const query = `query{stats {\
+    pr_pick_up_time_avg(${argsString}) {\
       tech_name\
       value\
     }\
-  }}';
-  if (args) {
-    query =
-      'stats {\
-      pr_pick_up_time_avg(from: $from, repository: $repository\
-        tech: $tech, to: $to, username: $usernam, merged: $merge ) {\
-        tech_name\
-        value\
-      }\
-    }';
-  }
+  }}`;
   const res = await request(api, query, args);
   return res;
 };
 
 const getAvgReviewTime = async args => {
-  let query = 'query{stats {\
-    merged_prs_without_review {\
+  const argsString = generateGitStatsArgsString(args || {});
+  const query = `query{stats {\
+    pr_review_time_avg(${argsString}) {\
       tech_name\
       value\
     }\
-  }}';
-  if (args) {
-    query =
-      'stats {\
-      pr_pick_up_time_avg(from: $from, repository: $repository\
-        tech: $tech, to: $to, username: $usernam, merged: $merge ) {\
-        tech_name\
-        value\
-      }\
-    }';
-  }
-  const res = await request(api, query, args);
+  }}`;
+  const res = await request(api, query);
   return res;
 };
 
@@ -59,9 +53,10 @@ exports.prPickUpTimeAvg = {
   resolve: getAvgPickUpTime
 };
 
-getAvgPickUpTime(false, { from: '', repository: '', tech: '', to: '', username: '', merged: '' })
-  .then(res => console.log(res))
-  .catch(() => console.log('Error de parte del server'));
-getAvgReviewTime()
-  .then(res => console.log(res))
-  .catch(() => console.log('Error de parte del server'));
+
+getAvgPickUpTime({ from: '31/10/2019'})
+   .then(res => console.log(res))
+   .catch(() => console.log('Error de parte del server'));
+ getAvgReviewTime({ from: "30/10/2019", to: "31/10/2019"})
+   .then(res => console.log(res))
+   .catch(err => console.log(err));
