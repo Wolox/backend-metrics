@@ -62,7 +62,10 @@
     "graphql": "^14.2.1",
     "graphql-middleware": "^3.0.2",
     "graphql-tools": "^4.0.4",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "npm-check": "^5.9.0",
+    "npm-count": "^0.1.0",
+    "shelljs": "^0.8.3"
   },
   "devDependencies": {
     "apollo-server-testing": "^2.5.0",

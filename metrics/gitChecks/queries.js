@@ -38,25 +38,3 @@ const getAvgReviewTime = async args => {
   const res = await request(api, query);
   return res;
 };
-
-exports.prPickUpTimeAvg = {
-  description: 'Pull request average pick up time',
-  type: gitStatsByTech,
-  args: {
-    from: { type: GraphQLString },
-    to: { type: GraphQLString },
-    repository: { type: GraphQLString },
-    tech: { type: GraphQLString },
-    username: { type: GraphQLString },
-    merge: { type: GraphQLString }
-  },
-  resolve: getAvgPickUpTime
-};
-
-
-getAvgPickUpTime({ from: '31/10/2019'})
-   .then(res => console.log(res))
-   .catch(() => console.log('Error de parte del server'));
- getAvgReviewTime({ from: "30/10/2019", to: "31/10/2019"})
-   .then(res => console.log(res))
-   .catch(err => console.log(err));
