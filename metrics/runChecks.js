@@ -4,9 +4,13 @@ const { checkCoverage } = require('./metrics/queries.js');
 
 const runAllChecks = async testPath => {
   const result = [];
+  console.log('Checking build time');
   const buildTime = await getBuildTime(testPath);
+  console.log('Checking dependencies');
   const dependencies = await getDependencies(testPath);
+  console.log('Evaluating code codeQuality');
   const codeQuality = await checkInspect(testPath);
+  console.log('Checking coverage');
   const codeCoverage = await checkCoverage(testPath);
   result.push(buildTime);
   result.push(dependencies);
@@ -15,4 +19,4 @@ const runAllChecks = async testPath => {
   return result;
 };
 
-runAllChecks('/home/amoragues/natura-node').then(res => console.log(res));
+runAllChecks("").then(res => console.log(res));
