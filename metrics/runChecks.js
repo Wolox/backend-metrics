@@ -19,4 +19,4 @@ const runAllChecks = async testPath => {
   return result;
 };
 
-runAllChecks("").then(res => console.log(res));
+runAllChecks('').then(res => console.log(res));

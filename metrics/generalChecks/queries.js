@@ -14,8 +14,8 @@ exports.getBuildTime = testPath => {
 exports.getDependencies = async testPath => {
   const installInfo = shell.exec(`npm i --prefix ${testPath}`);
   const totalPackages = installInfo.stdout.slice(
-  installInfo.stdout.search('audited') + 'audited'.length,
-  installInfo.stdout.search('packages in')
+    installInfo.stdout.search('audited') + 'audited'.length,
+    installInfo.stdout.search('packages in')
   );
   const currentState = await npmCheck({ cwd: testPath });
 
@@ -26,9 +26,9 @@ exports.getDependencies = async testPath => {
     value: packages.length
   });
   generalResult.push({
-  metric: 'INDIRECT_DEPENDENCIES',
-  description: 'Cantidad de dependencias no directas',
-  value: parseInt(totalPackages) - packages.length
-   });
+    metric: 'INDIRECT_DEPENDENCIES',
+    description: 'Cantidad de dependencias no directas',
+    value: parseInt(totalPackages) - packages.length
+  });
   return generalResult;
 };
