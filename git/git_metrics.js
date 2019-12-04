@@ -1,4 +1,5 @@
-const shell = require('shelljs');
+/* eslint-disable */
+
 const util = require('util');
 const path = require('path');
 const { request } = require('graphql-request');
@@ -41,13 +42,11 @@ const getAvgReviewTime = async args => {
   return res;
 };
 
-shell.exec('npm install graphql');
-shell.exec('npm install graphql-request');
+const date = new Date();
+const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
 
-const date, twoWeeksBeforeDate = new Date();
-var twoWeeksBefore = date.getDate() - 14;
-twoWeeksBeforeDate.setDate(twoWeeksBefore);
+const repository = process.env.CIRCLE_PROJECT_REPONAME;
 
-const repository = path.resolve(__dirname, '..').split(path.sep).pop();
-const gitChecks = [getAvgPickUpTime({from: date, to: twoWeeksBefore, repository}), getAvgReviewTime({from: date, to: twoWeeksBefore, repository})];
+const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
 Promise.all(gitChecks).then(res => console.log(util.inspect(res, {depth: null})));
+
