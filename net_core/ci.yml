@@ -1,0 +1,11 @@
+language: python
+python: "3.5"
+sudo: true
+script:
+  - sudo snap install dotnet-sdk --channel=2.2/stable --classic
+  - sudo snap alias dotnet-sdk.dotnet dotnet
+  - export DOTNET_ROOT=/snap/dotnet-sdk/current
+  - export PATH="$PATH:/home/travis/.dotnet/tools"
+  - dotnet tool install --global dotnet-reportgenerator-globaltool --framework netcoreapp2.2
+  - chmod a+rwx script.py
+  - python3 script.py
