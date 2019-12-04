@@ -8,4 +8,4 @@ script:
   - export PATH="$PATH:/home/travis/.dotnet/tools"
   - dotnet tool install --global dotnet-reportgenerator-globaltool --framework netcoreapp2.2
   - chmod a+rwx metrics.py
-  - python3 metrics.py
+  - python3 metrics_net.py

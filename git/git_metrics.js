@@ -1,9 +1,6 @@
-/* eslint-disable */
 const shell = require('shelljs');
-
 const util = require('util')
 const { request } = require('graphql-request');
-const { GraphQLString } = require('graphql');
 const api = 'https://node-github-stats.herokuapp.com/graphql';
 
 const generateGitStatsArgsString = args => {
@@ -42,7 +39,6 @@ const getAvgReviewTime = async args => {
   const res = await request(api, query);
   return res;
 };
-
 
 shell.exec('npm install graphql');
 shell.exec('npm install graphql-request');

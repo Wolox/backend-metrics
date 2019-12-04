@@ -15,4 +15,4 @@ before_install:
 script:
   - ./gradlew clean build
   - chmod a+rwx coverage.py
-  - python3 metrics.py
+  - python3 metrics_java.py

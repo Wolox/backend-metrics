@@ -1,6 +1,6 @@
-const { getBuildTime, getDependencies } = require('./generalChecks/queries.js');
-const { checkInspect } = require('./linterChecks/queries.js');
-const { checkCoverage } = require('./metrics/queries.js');
+const { getBuildTime, getDependencies } = require('./general_checks.js');
+const { checkInspect } = require('./quality.js');
+const { checkCoverage } = require('./coverage.js');
 
 const runAllChecks = async testPath => {
   const result = [];
