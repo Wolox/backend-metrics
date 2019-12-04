@@ -1,0 +1,3 @@
+steps:
+  metrics:
+      - node metrics.js

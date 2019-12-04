@@ -1,0 +1,18 @@
+language: java
+jdk:
+  - oraclejdk8
+sudo: true
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+dist: trusty
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install python3
+script:
+  - ./gradlew clean build
+  - chmod a+rwx coverage.py
+  - python3 metrics.py

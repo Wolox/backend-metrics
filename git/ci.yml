@@ -1,0 +1,3 @@
+steps:
+  git:
+      - node metrics/git.js

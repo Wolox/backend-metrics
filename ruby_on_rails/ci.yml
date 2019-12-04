@@ -25,7 +25,7 @@ before_script:
 script:
   - bundle exec rubocop --require rubocop-rails app spec
   - bundle exec rspec spec -fd
-  - sh scripts/metrics.sh
+  - sh metrics.sh
 
 cache:
   bundler: true
