@@ -1,5 +1,6 @@
 const shell = require('shelljs');
-const util = require('util')
+const util = require('util');
+const path = require('path');
 const { request } = require('graphql-request');
 const api = 'https://node-github-stats.herokuapp.com/graphql';
 
@@ -42,5 +43,11 @@ const getAvgReviewTime = async args => {
 
 shell.exec('npm install graphql');
 shell.exec('npm install graphql-request');
-const gitChecks = [getAvgPickUpTime({from: "10/11/2019", to: "24/11/2019", repository: "svl-finance-node"}), getAvgReviewTime({from: "10/11/2019", to: "24/11/2019", repository: "svl-finance-node"})];
+
+const date, twoWeeksBeforeDate = new Date();
+var twoWeeksBefore = date.getDate() - 14;
+twoWeeksBeforeDate.setDate(twoWeeksBefore);
+
+const repository = path.resolve(__dirname, '..').split(path.sep).pop();
+const gitChecks = [getAvgPickUpTime({from: date, to: twoWeeksBefore, repository}), getAvgReviewTime({from: date, to: twoWeeksBefore, repository})];
 Promise.all(gitChecks).then(res => console.log(util.inspect(res, {depth: null})));
