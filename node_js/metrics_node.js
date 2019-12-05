@@ -1,6 +1,8 @@
+/* eslint-disable */
+
 const { getBuildTime, getDependencies } = require('./general_checks.js');
 const { checkInspect } = require('./quality.js');
-const { checkCoverage } = require('./coverage.js');
+const { checkCoverage } = require('./coverage-jest.js');
 
 const runAllChecks = async testPath => {
   const result = [];

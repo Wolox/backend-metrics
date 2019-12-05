@@ -1,15 +1,16 @@
+/* eslint-disable */
+
 const shell = require('shelljs');
 shell.config.silent = true;
-const FUNCTIONOFFSET = 49;
-const LINESOFFSET = 60;
+const FUNCTIONOFFSET = 83;
+const LINESOFFSET = 94;
 const PERCENTAGEPRECISION = 5;
 
 exports.checkCoverage = testPath => {
   console.log('Empezando coverage para el build...');
   const metrics = [];
   const results = shell.exec(
-    // eslint-disable-next-line
-    `cd ${testPath}\n NODE_ENV=testing ${testPath}/node_modules/.bin/jest --coverage --detectOpenHandles --forceExit --passWithNoTests ${testPath}`
+    `npm run coverage`
   );
   const allFilesIndex = results.stdout.search('\nAll files');
   const functionPercent = results.stdout.slice(

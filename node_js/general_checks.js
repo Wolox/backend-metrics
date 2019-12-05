@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const shell = require('shelljs');
 const seconds = 1000;
 const generalResult = [];
