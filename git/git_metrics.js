@@ -46,6 +46,7 @@ const date = new Date();
 const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
 
 const repository = process.env.CIRCLE_PROJECT_REPONAME;
+const branch = process.env.CIRCLE_BRANCH;
 
 const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
 Promise.all(gitChecks).then(res => console.log(util.inspect(res, {depth: null})));
