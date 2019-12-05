@@ -1,14 +1,15 @@
+/* eslint-disable */
+
 const shell = require('shelljs');
 shell.config.silent = true;
 const results = [];
 
 const getMatches = (instances, testPath) => {
   const inspectResult = shell.exec(
-    `jsinspect -I -L -m ${instances} -t 20 --ignore "migrations|test|coverage" ${testPath}`
+    `./node_modules/.bin/jsinspect -I -L -m ${instances} -t 20 --ignore "migrations|test|coverage" ${testPath}`
   );
   const auxString = inspectResult.stdout.slice(0, inspectResult.lastIndexOf('matches'));
   const matches = auxString.slice(auxString.lastIndexOf('\n'));
-
   return parseInt(matches);
 };
 
@@ -16,7 +17,6 @@ const getMatchesWithXInstances = (instances, testPath) =>
   getMatches(instances, testPath) - getMatches(instances + 1, testPath);
 
 exports.checkInspect = async testPath => {
-  shell.exec('npm install jsinspect');
   let score = 100;
   let instances = 2;
   let matches = -1;
@@ -33,3 +33,4 @@ exports.checkInspect = async testPath => {
   });
   return results;
 };
+

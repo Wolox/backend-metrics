@@ -1,3 +1,19 @@
-steps:
   metrics:
-      - node metrics.js
+    docker:
+      - image: circleci/node:8.11.4-stretch-browsers
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install npm
+          command: npm install
+      - run:
+         name: premetrics
+         command: npm install shelljs npm-check jsinspect
+      - run:
+         name: metrics
+         command: node metrics/metrics_node.js 
