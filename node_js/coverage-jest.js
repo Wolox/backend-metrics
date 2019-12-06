@@ -2,15 +2,15 @@
 
 const shell = require('shelljs');
 shell.config.silent = true;
-const FUNCTIONOFFSET = 49;
-const LINESOFFSET = 60;
+const FUNCTIONOFFSET = 95;
+const LINESOFFSET = 106;
 const PERCENTAGEPRECISION = 5;
 
-exports.checkCoverage = testPath => {
+exports.checkCoverage = (testPath) => {
   console.log('Empezando coverage para el build...');
   const metrics = [];
   const results = shell.exec(
-    `cd ${testPath}\n NODE_ENV=testing ${testPath}/node_modules/.bin/jest --coverage --detectOpenHandles --forceExit --passWithNoTests ${testPath}`
+    `npm run cover ${testPath}`
   );
   const allFilesIndex = results.stdout.search('\nAll files');
   const functionPercent = results.stdout.slice(
@@ -20,7 +20,7 @@ exports.checkCoverage = testPath => {
   metrics.push({
     metric: 'Functions Covered',
     description: '% de funciones cubiertas',
-    value: functionPercent
+    value: parseInt(functionPercent[2] === "." ? functionPercent : functionPercent.slice(0,1))
   });
   const linesPercent = results.stdout.slice(
     allFilesIndex + LINESOFFSET,
@@ -29,7 +29,9 @@ exports.checkCoverage = testPath => {
   metrics.push({
     metric: 'Lines covered',
     description: '% de lineas cubiertas',
-    value: linesPercent
+    value: parseInt(linesPercent[2] === "." ? linesPercent : linesPercent.slice(0,2))
   });
   return metrics;
 };
+
+
