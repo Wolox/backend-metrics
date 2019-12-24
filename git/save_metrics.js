@@ -13,11 +13,10 @@ const saveMetrics = body =>
 
 const buildMetrics = ({env,repository, metrics}) => ({
     env,
-    tech: 'node',
+    tech: 'YOUR_TECH',
     repo_name: repository,
     metrics,
-    project_id: '9',
-    project_name: 'svl'
+    project_name: 'YOUR_PROJECT_NAME'
 })
 
 module.exports = {saveMetrics, buildMetrics};
