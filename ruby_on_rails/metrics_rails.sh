@@ -1,5 +1,5 @@
 # Check if directory has a Gemfile
-if ! ls Gemfile > /dev/null  ; then
+if ! ls Gemfile > /dev/null ; then
   echo "Project is not a Ruby On Rails project"
   exit
 fi
@@ -12,9 +12,13 @@ total_dependencies=$(echo "${bundle_output}" | grep "Bundle complete" | cut -d "
 indirect_dependencies=$((total_dependencies - direct_dependencies))
 
 # rspec
-echo "Running tests to generate coverage report..."
-rspec_output=$(bundle exec rspec spec | tee /dev/tty)
-code_coverage=$(echo "${rspec_output}" | grep "Coverage report" | cut -d "(" -f2 | cut -d "%" -f1)
+if ! ls coverage/.last_run.json > /dev/null ; then
+	echo "Running tests to generate coverage report..."
+	bundle exec rspec spec | tee /dev/tty
+fi
+printf "Getting code coverage from last tests run..."
+code_coverage=$(cat coverage/.last_run.json | python -c 'import sys, json; print json.load(sys.stdin)["result"]["covered_percent"]')
+printf "done\n"
 
 # rubycritic
 echo "Running rubycritic for code quality score..."
