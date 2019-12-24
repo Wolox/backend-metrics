@@ -44,7 +44,7 @@ jobs:
           command: npm install
       - run:
          name: pregit
-         command: npm install graphql graphql-request
+         command: npm install graphql graphql-request request-promise
       - run:
          name: git
          command: node metrics/git_metrics.js 
@@ -52,7 +52,7 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  build_and_metrics:
     jobs:
       - build
       - metrics:

@@ -1,9 +1,12 @@
 /* eslint-disable */
 
 const util = require('util');
-const path = require('path');
 const { request } = require('graphql-request');
 const api = 'https://node-github-stats.herokuapp.com/graphql';
+const {buildMetrics, saveMetrics} = require('./save_metrics');
+
+const PICK_UP_TIME = 'pick-up-time';
+const CODE_REVIEW_AVERAGE_TIME = 'code-review-avg-time';
 
 const generateGitStatsArgsString = args => {
   let stringArgs = '';
@@ -45,9 +48,27 @@ const getAvgReviewTime = async args => {
 const date = new Date();
 const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
 
-const repository = process.env.CIRCLE_PROJECT_REPONAME;
-const branch = process.env.CIRCLE_BRANCH;
+const repository = process.env.CIRCLE_PROJECT_REPONAME || 'YOUR_PROJECT_NAME';
+const branch = process.env.CIRCLE_BRANCH || 'YOUR_ENV';
 
 const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
-Promise.all(gitChecks).then(res => console.log(util.inspect(res, {depth: null})));
+Promise.all(gitChecks).then(res => {
+  const pickUpTime = res[0].stats.pr_pick_up_time_avg[0].value;
+  const reviewTime = res[1].stats.pr_review_time_avg[0].value;
+  const metrics = [
+    {
+      name: PICK_UP_TIME,
+      value: parseFloat(pickUpTime).toString(),
+      version: '1.0'
+    },
+    {
+      name: CODE_REVIEW_AVERAGE_TIME,
+      value: parseFloat(reviewTime).toString(),
+      version: '1.0'
+    },
+  ];
+  return saveMetrics(
+    buildMetrics({metrics, repository, env: branch}))
+});
+
 
