@@ -2,7 +2,7 @@
 
 const util = require('util');
 const { request } = require('graphql-request');
-const args = parseArgs(process.argv);
+const parseArgs = require('minimist');
 
 const api = 'https://node-github-stats.herokuapp.com/graphql';
 const {buildMetrics, saveMetrics} = require('./save_metrics');
@@ -52,6 +52,7 @@ let repository = '';
 let tech = 'node';
 let projectName = '';
 
+const args = parseArgs(process.argv);
 
 if (args.branch || args.b) {
   branch = args.branch || args.b;
