@@ -2,6 +2,8 @@
 
 const util = require('util');
 const { request } = require('graphql-request');
+const args = parseArgs(process.argv);
+
 const api = 'https://node-github-stats.herokuapp.com/graphql';
 const {buildMetrics, saveMetrics} = require('./save_metrics');
 
@@ -45,11 +47,30 @@ const getAvgReviewTime = async args => {
   return res;
 };
 
+let branch = 'development';
+let repository = '';
+let tech = 'node';
+let projectName = '';
+
+
+if (args.branch || args.b) {
+  branch = args.branch || args.b;
+}
+
+if (args.repository || args.r) {
+  branch = args.repository || args.r;
+}
+
+if (args.tech || args.t) {
+  tech = args.tech || args.t;
+}
+
+if (args.projectName || args.p) {
+  projectName = args.projectName || args.p;
+}
+
 const date = new Date();
 const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
-
-const repository = process.env.CIRCLE_PROJECT_REPONAME || 'YOUR_PROJECT_NAME';
-const branch = process.env.CIRCLE_BRANCH || 'YOUR_ENV';
 
 const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
 Promise.all(gitChecks).then(res => {
@@ -69,7 +90,7 @@ Promise.all(gitChecks).then(res => {
   ];
   console.log(metrics);
   return saveMetrics(
-    buildMetrics({metrics, repository, env: branch}))
+    buildMetrics({metrics, repository, env: branch, tech, projectName}))
 });
 
 

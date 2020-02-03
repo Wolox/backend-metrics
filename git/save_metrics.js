@@ -11,12 +11,12 @@ const saveMetrics = body =>
 .then(console.log)
 .catch(console.log);
 
-const buildMetrics = ({env,repository, metrics}) => ({
+const buildMetrics = ({env,repository, metrics, tech, projectName}) => ({
     env,
-    tech: 'YOUR_TECH',
+    tech,
     repo_name: repository,
     metrics,
-    project_name: 'YOUR_PROJECT_NAME'
+    project_name: projectName
 })
 
 module.exports = {saveMetrics, buildMetrics};

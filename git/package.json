@@ -2,7 +2,7 @@
   "name": "git-metrics",
   "version": "1.0.0",
   "description": "",
-  "main": "git_metrics.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +11,7 @@
   "dependencies": {
     "graphql": "^14.6.0",
     "graphql-request": "^1.8.2",
+    "minimist": "^1.2.0",
     "request-promise": "^4.2.5"
   }
 }
