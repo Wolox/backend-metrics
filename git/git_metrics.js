@@ -67,6 +67,7 @@ Promise.all(gitChecks).then(res => {
       version: '1.0'
     },
   ];
+  console.log(metrics);
   return saveMetrics(
     buildMetrics({metrics, repository, env: branch}))
 });
