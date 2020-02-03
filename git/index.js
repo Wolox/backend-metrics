@@ -51,6 +51,7 @@ let branch = 'development';
 let repository = '';
 let tech = 'node';
 let projectName = '';
+let metricsUrl = '';
 
 const args = parseArgs(process.argv);
 
@@ -68,6 +69,10 @@ if (args.tech || args.t) {
 
 if (args.projectName || args.p) {
   projectName = args.projectName || args.p;
+}
+
+if (args.metricsUrl || args.m) {
+  metricsUrl = args.metricsUrl || args.m;
 }
 
 const date = new Date();
@@ -91,7 +96,7 @@ Promise.all(gitChecks).then(res => {
   ];
   console.log(metrics);
   return saveMetrics(
-    buildMetrics({metrics, repository, env: branch, tech, projectName}))
+    buildMetrics({metrics, repository, env: branch, tech, projectName}), metricsUrl)
 });
 
 

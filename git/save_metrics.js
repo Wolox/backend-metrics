@@ -1,9 +1,9 @@
 /* eslint-disable */
 const requestPromise = require('request-promise');
 
-const saveMetrics = body =>
+const saveMetrics = (body, url) =>
   requestPromise({
-    url: 'https://intense-shore-66409.herokuapp.com/metrics',
+    url,
     method: 'post',
     json: true,
     body,
