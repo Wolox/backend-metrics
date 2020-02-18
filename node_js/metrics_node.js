@@ -1,20 +1,38 @@
 /* eslint-disable */
 
+const parseArgs = require('minimist');
+
 const { getBuildTime, getDependencies } = require('./general_checks.js');
 const { checkInspect } = require('./quality.js');
 const { checkCoverage } = require('./coverage_nyc.js');
-const {buildMetrics, saveMetrics} = require('../git/save_metrics');
+const { buildMetrics, saveMetrics } = require('../git/save_metrics');
 
 const BUILD_TIME = 'build-time';
 const DIRECT_DEPENDENCIES = 'direct-dependencies';
 const INDIRECT_DEPENDENCIES = 'indirect-dependencies';
 const CODE_COVERAGE = 'code-coverage';
 const CODE_QUALITY = 'code-quality';
-const repository = process.env.CIRCLE_PROJECT_REPONAME || 'YOUR_REPOSITORY';
-const branch = process.env.CIRCLE_BRANCH || 'YOUR_BRANCH';
+
+const NODE_METRICS_URL = '';
+const NODE_TECH = 'node';
+const ENV_BRANCH = 'development';
+// const repository = process.env.CIRCLE_PROJECT_REPONAME || 'YOUR_REPOSITORY';
+// const branch = process.env.CIRCLE_BRANCH || 'YOUR_BRANCH';
+
+const getArgs = () => {
+  const args = parseArgs(process.argv);
+  return {
+    tech: args.tech || args.t || NODE_TECH,
+    branch: args.branch || args.b || ENV_BRANCH,
+    repository: args.repository || args.r || '',
+    projectName: args.projectName || args.p || '',
+    metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL
+  };
+};
 
 const runAllChecks = async testPath => {
-  const result = [];
+  const { repository, branch: env, projectName, tech, metricsUrl } = getArgs();
+
   console.log('Checking build time');
   const buildTime = await getBuildTime(testPath);
   console.log('Checking dependencies');
@@ -23,10 +41,7 @@ const runAllChecks = async testPath => {
   const codeQuality = await checkInspect(testPath);
   console.log('Checking coverage');
   const codeCoverage = await checkCoverage(testPath);
-  result.push(buildTime);
-  result.push(dependencies);
-  result.push(codeQuality);
-  result.push(codeCoverage);
+
   const metrics = [
     {
       name: BUILD_TIME,
@@ -55,8 +70,7 @@ const runAllChecks = async testPath => {
     },
   ];
   return saveMetrics(
-    buildMetrics({metrics, repository, env: branch}));
+    buildMetrics({ metrics, repository, env, projectName, tech }), metricsUrl);
 };
 
 runAllChecks('').then(res => console.log(res));
-
