@@ -1,0 +1,18 @@
+{
+  "name": "node-metrics",
+  "version": "1.0.0",
+  "description": "Wolox NodeJS Metrics",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "npm-check": "^5.9.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "shelljs": "^0.8.3"
+  }
+}
