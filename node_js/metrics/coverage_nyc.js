@@ -7,7 +7,7 @@ const LINESOFFSET = 94;
 const PERCENTAGEPRECISION = 5;
 
 exports.checkCoverage = testPath => {
-  console.log('Empezando coverage para el build...');
+  console.log('Starting coverage for the build...');
   const metrics = [];
   const results = shell.exec(
     `npm run coverage`
