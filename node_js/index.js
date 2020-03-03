@@ -21,7 +21,6 @@ const ENV_BRANCH = 'development';
 
 const getArgs = () => {
   const args = parseArgs(process.argv);
-  console.log(args);
   return {
     tech: args.tech || args.t || NODE_TECH,
     branch: args.branch || args.b || ENV_BRANCH,
@@ -74,4 +73,4 @@ const runAllChecks = async testPath => {
     buildMetrics({ metrics, repository, env, projectName, tech }), metricsUrl);
 };
 
-runAllChecks('').then(res => console.log(res));
+runAllChecks('');
