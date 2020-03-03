@@ -32,7 +32,7 @@ const getArgs = () => {
 
 const runAllChecks = async () => {
   const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
-  const projectPath = `../${repository}` 
+  const projectPath = `../../${repository}` 
 
   console.log('Checking build time');
   const buildTime = await getBuildTime(projectPath);
