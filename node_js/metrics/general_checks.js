@@ -8,9 +8,7 @@ const npmCheck = require('npm-check');
 exports.getBuildTime = testPath => {
   shell.exec(`npm i --prefix ${testPath}`);
   const start = new Date();
-  console.log(start);
   shell.exec(`npm run build development --prefix ${testPath}`);
-  console.log(new Date().getTime());
   const buildTime = (new Date().getTime() - start.getTime()) / seconds;
   return [{ metric: 'BUILD TIME', description: 'Build Time', value: buildTime }];
 };
