@@ -30,7 +30,7 @@ const getArgs = () => {
   };
 };
 
-const runAllChecks = () => {
+const runAllChecks = async () => {
   const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
   const projectPath = `../${repository}` 
 
