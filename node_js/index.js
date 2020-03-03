@@ -69,6 +69,8 @@ const runAllChecks = async testPath => {
       version: '1.0'
     },
   ];
+  console.log(metrics);
+
   return saveMetrics(
     buildMetrics({ metrics, repository, env, projectName, tech }), metricsUrl);
 };
