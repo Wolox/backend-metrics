@@ -21,27 +21,27 @@ const ENV_BRANCH = 'development';
 
 const getArgs = () => {
   const args = parseArgs(process.argv);
-  console.log(args);
   return {
-    tech: args.tech || args.t || NODE_TECH,
-    branch: args.branch || args.b || ENV_BRANCH,
     repository: args.repository || args.r || '',
+    tech: args.tech || args.t || NODE_TECH,
     projectName: args.projectName || args.p || '',
+    branch: args.branch || args.b || ENV_BRANCH,
     metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL
   };
 };
 
-const runAllChecks = async testPath => {
-  const { repository, branch: env, projectName, tech, metricsUrl } = getArgs();
+const runAllChecks = async () => {
+  const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
+  const projectPath = `../../${repository}` 
 
   console.log('Checking build time');
-  const buildTime = await getBuildTime(testPath);
+  const buildTime = await getBuildTime(projectPath);
   console.log('Checking dependencies');
-  const dependencies = await getDependencies(testPath);
+  const dependencies = await getDependencies(projectPath);
   console.log('Evaluating code codeQuality');
-  const codeQuality = await checkInspect(testPath);
+  const codeQuality = await checkInspect(projectPath);
   console.log('Checking coverage');
-  const codeCoverage = await checkCoverage(testPath);
+  const codeCoverage = await checkCoverage(projectPath);
 
   const metrics = [
     {
@@ -70,8 +70,10 @@ const runAllChecks = async testPath => {
       version: '1.0'
     },
   ];
+  console.log(metrics);
+
   return saveMetrics(
-    buildMetrics({ metrics, repository, env, projectName, tech }), metricsUrl);
+    buildMetrics({ metrics, repository, tech, projectName, env }), metricsUrl);
 };
 
-runAllChecks('').then(res => console.log(res));
+runAllChecks();
