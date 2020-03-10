@@ -10,8 +10,7 @@ const getMatches = (instances, testPath) => {
   );
   const auxString = inspectResult.stdout.slice(0, inspectResult.lastIndexOf('matches'));
   const matches = auxString.slice(auxString.lastIndexOf('\n'));
-  console.log(auxString,matches);
-  return parseInt(matches);
+  return parseInt(matches) || 0;
 };
 
 const getMatchesWithXInstances = (instances, testPath) =>
