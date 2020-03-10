@@ -22,6 +22,7 @@ exports.checkInspect = async testPath => {
   let matches = -1;
   while (matches !== 0 && instances <= 11) {
     matches = await getMatchesWithXInstances(instances, testPath);
+    console.log(score, matches, instances)
     // eslint-disable-next-line
     score = score - matches * (instances / 4);
     instances++;
