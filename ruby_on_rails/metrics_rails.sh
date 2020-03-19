@@ -97,27 +97,27 @@ curl -i \
     "project_name": '\""${project_name}"\"',
     "metrics": [
       {
-        "name": "code_coverage",
+        "name": "code-coverage",
         "value": '\""${code_coverage}"\"',
         "version": "1.0"
       },
       {
-        "name": "code_quality",
+        "name": "code-quality",
         "value": '\""${code_quality}"\"',
         "version": "1.0"
       },
       {
-        "name": "direct_dependencies",
+        "name": "direct-dependencies",
         "value": '\""${direct_dependencies}"\"',
         "version": "1.0"
       },
       {
-        "name": "indirect_dependencies",
+        "name": "indirect-dependencies",
         "value": '\""${indirect_dependencies}"\"',
         "version": "1.0"
       },
       {
-        "name": "build_time",
+        "name": "build-time",
         "value": '\""${build_time}"\"',
         "version": "1.0"
       }
