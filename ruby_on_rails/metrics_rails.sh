@@ -40,3 +40,86 @@ echo "Code quality score (rubycritic): ${code_quality}"
 echo "Direct dependencies: ${direct_dependencies}"
 echo "Indirect dependencies: ${indirect_dependencies}"
 echo "Build time (seconds): ${build_time}"
+
+# Sending metrics
+echo "Sending metrics to the server..."
+
+while test -n "$1"; do # parsing args options
+  case "$1" in
+    -m|--metricsUrl|--metrics_url)
+      metrics_url=$2
+      shift 2
+      ;;
+    -t|--tech)
+      tech=$2
+      shift 2
+      ;;
+    -b|--env)
+      branch=$2
+      shift 2
+      ;;
+    -r|--repository)
+      repo_name=$2
+      shift 2
+      ;;
+    -p|--project_name|--projectName)
+      project_name=$2
+      shift 2
+      ;;
+  esac
+done
+
+# args options or default values
+DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
+DEFAULT_TECH='ruby_on_rails'
+DEFAULT_BRANCH='development'
+UNDEFINED_VALUE=-1
+
+metrics_url="${metrics_url:-$DEFAULT_METRICS_URL}"
+tech="${tech:-$DEFAULT_TECH}"
+branch="${branch:-$DEFAULT_BRANCH}"
+
+code_coverage="${code_coverage:-$UNDEFINED_VALUE}"
+code_quality="${code_quality:-$UNDEFINED_VALUE}"
+direct_dependencies="${direct_dependencies:-$UNDEFINED_VALUE}"
+indirect_dependencies="${indirect_dependencies:-$UNDEFINED_VALUE}"
+build_time="${build_time:-$UNDEFINED_VALUE}"
+
+curl -i \
+  --request POST \
+  ${metrics_url} \
+  --header "Accept: application/json" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "tech": '\""${tech}"\"',
+    "env": '\""${branch}"\"',
+    "repo_name": '\""${repo_name}"\"',
+    "project_name": '\""${project_name}"\"',
+    "metrics": [
+      {
+        "name": "code_coverage",
+        "value": '"${code_coverage}"',
+        "version": 1.0
+      },
+      {
+        "name": "code_quality",
+        "value": '"${code_quality}"',
+        "version": 1.0
+      },
+      {
+        "name": "direct_dependencies",
+        "value": '"${direct_dependencies}"',
+        "version": 1.0
+      },
+      {
+        "name": "indirect_dependencies",
+        "value": '"${indirect_dependencies}"',
+        "version": 1.0
+      },
+      {
+        "name": "build_time",
+        "value": '"${build_time}"',
+        "version": 1.0
+      }
+    ]
+  }'
