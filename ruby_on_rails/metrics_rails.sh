@@ -90,36 +90,36 @@ curl -i \
   ${metrics_url} \
   --header "Accept: application/json" \
   --header "Content-Type: application/json" \
-  --data "{
-    \"tech\": \"${tech}\",
-    \"env\": \"${branch}\",
-    \"repo_name\": \"${repo_name}\",
-    \"project_name\": \"${project_name}\",
-    \"metrics\": [
+  --data '{
+    "tech": '\""${tech}"\"',
+    "env": '\""${branch}"\"',
+    "repo_name": '\""${repo_name}"\"',
+    "project_name": '\""${project_name}"\"',
+    "metrics": [
       {
-        \"name\": \"code_coverage\",
-        \"value\": ${code_coverage},
-        \"version\": 1.0
+        "name": "code_coverage",
+        "value": '"${code_coverage}"',
+        "version": 1.0
       },
       {
-        \"name\": \"code_quality\",
-        \"value\": ${code_quality},
-        \"version\": 1.0
+        "name": "code_quality",
+        "value": '"${code_quality}"',
+        "version": 1.0
       },
       {
-        \"name\": \"direct_dependencies\",
-        \"value\": ${direct_dependencies},
-        \"version\": 1.0
+        "name": "direct_dependencies",
+        "value": '"${direct_dependencies}"',
+        "version": 1.0
       },
       {
-        \"name\": \"indirect_dependencies\",
-        \"value\": ${indirect_dependencies},
-        \"version\": 1.0
+        "name": "indirect_dependencies",
+        "value": '"${indirect_dependencies}"',
+        "version": 1.0
       },
       {
-        \"name\": \"build_time\",
-        \"value\": ${build_time},
-        \"version\": 1.0
+        "name": "build_time",
+        "value": '"${build_time}"',
+        "version": 1.0
       }
     ]
-  }"
+  }'
