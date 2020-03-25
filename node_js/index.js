@@ -46,27 +46,27 @@ const runAllChecks = async () => {
   const metrics = [
     {
       name: BUILD_TIME,
-      value: parseFloat(buildTime[0].value).toString(),
+      value: parseFloat(buildTime[0].value),
       version: '1.0'
     },
     {
       name: DIRECT_DEPENDENCIES,
-      value: parseFloat(dependencies[0].value).toString(),
+      value: parseFloat(dependencies[0].value),
       version: '1.0'
     },
     {
       name: INDIRECT_DEPENDENCIES,
-      value: parseFloat(dependencies[1].value).toString(),
+      value: parseFloat(dependencies[1].value),
       version: '1.0'
     },
     {
       name: CODE_COVERAGE,
-      value: parseFloat(codeCoverage[1].value).toString(),
+      value: parseFloat(codeCoverage[1].value),
       version: '1.0'
     },
     {
       name: CODE_QUALITY,
-      value: parseFloat(codeQuality[0].value).toString(),
+      value: parseFloat(codeQuality[0].value),
       version: '1.0'
     },
   ];

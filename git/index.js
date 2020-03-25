@@ -85,12 +85,12 @@ Promise.all(gitChecks).then(res => {
   const metrics = [
     {
       name: PICK_UP_TIME,
-      value: parseFloat(pickUpTime).toString(),
+      value: parseFloat(pickUpTime),
       version: '1.0'
     },
     {
       name: CODE_REVIEW_AVERAGE_TIME,
-      value: parseFloat(reviewTime).toString(),
+      value: parseFloat(reviewTime),
       version: '1.0'
     },
   ];
