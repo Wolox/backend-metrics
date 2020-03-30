@@ -4,7 +4,7 @@ const parseArgs = require('minimist');
 
 const { getBuildTime, getDependencies } = require('./metrics/general_checks.js');
 const { checkInspect } = require('./metrics/quality.js');
-const { checkCoverage } = require('./metrics/coverage_nyc.js');
+const { checkCoverage } = require('./metrics/coverage_jest.js');
 const { buildMetrics, saveMetrics } = require('./utils/save_metrics');
 
 const BUILD_TIME = 'build-time';
