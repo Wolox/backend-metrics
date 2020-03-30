@@ -13,6 +13,7 @@ exports.checkCoverage = async (testPath) => {
     `npm run cover ${testPath}`
   );
   const metricsFile = require(`${testPath}/coverage/coverage-summary.json`);
+  console.log(metricsFile);
   const functionPercent = metricsFile.total.functions.pct;
   metrics.push({
     metric: 'Functions Covered',
@@ -25,6 +26,7 @@ exports.checkCoverage = async (testPath) => {
     description: '% de lineas cubiertas',
     value: parseFloat(linesPercent)
   });
+  console.log(functionPercent, linesPercent);
   return metrics;
 };
 
