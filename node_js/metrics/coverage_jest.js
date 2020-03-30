@@ -5,6 +5,7 @@ shell.config.silent = true;
 const FUNCTIONOFFSET = 95;
 const LINESOFFSET = 106;
 const PERCENTAGEPRECISION = 5;
+const fs = require('fs');
 
 exports.checkCoverage = async (testPath) => {
   console.log('Empezando coverage para el build...');
@@ -12,6 +13,11 @@ exports.checkCoverage = async (testPath) => {
   await shell.exec(
     `npm run test -- --coverage ${testPath}`
   );
+  fs.readdir(testPath, (err, files) => {
+    files.forEach(file => {
+      console.log(file);
+    });
+  });
   const metricsFile = require(`${testPath}/coverage/coverage-summary.json`);
   console.log(metricsFile);
   const functionPercent = metricsFile.total.functions.pct;
