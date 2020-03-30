@@ -10,7 +10,7 @@ exports.checkCoverage = async (testPath) => {
   console.log('Empezando coverage para el build...');
   const metrics = [];
   await shell.exec(
-    `npm run cover ${testPath}`
+    `npm run test -- --coverage ${testPath}`
   );
   const metricsFile = require(`${testPath}/coverage/coverage-summary.json`);
   console.log(metricsFile);
