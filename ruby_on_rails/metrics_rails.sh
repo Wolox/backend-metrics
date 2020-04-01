@@ -98,27 +98,27 @@ curl -i \
     "metrics": [
       {
         "name": "code-coverage",
-        "value": '\""${code_coverage}"\"',
+        "value": '${code_coverage}',
         "version": "1.0"
       },
       {
         "name": "code-quality",
-        "value": '\""${code_quality}"\"',
+        "value": '${code_quality}',
         "version": "1.0"
       },
       {
         "name": "direct-dependencies",
-        "value": '\""${direct_dependencies}"\"',
+        "value": '${direct_dependencies}',
         "version": "1.0"
       },
       {
         "name": "indirect-dependencies",
-        "value": '\""${indirect_dependencies}"\"',
+        "value": '${indirect_dependencies}',
         "version": "1.0"
       },
       {
         "name": "build-time",
-        "value": '\""${build_time}"\"',
+        "value": '${build_time}',
         "version": "1.0"
       }
     ]
