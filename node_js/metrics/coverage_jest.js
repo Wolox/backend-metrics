@@ -13,13 +13,7 @@ exports.checkCoverage = async (testPath) => {
   await shell.exec(
     `npm run test -- --coverage ${testPath}`
   );
-  fs.readdir(testPath, (err, files) => {
-    files.forEach(file => {
-      console.log(file);
-    });
-  });
-  const metricsFile = require(`${testPath}/coverage/coverage-summary.json`);
-  console.log(metricsFile);
+  const metricsFile = require(`../${testPath}/coverage/coverage-summary.json`);
   const functionPercent = metricsFile.total.functions.pct;
   metrics.push({
     metric: 'Functions Covered',
