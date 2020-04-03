@@ -6,7 +6,7 @@ const results = [];
 exports.checkInspect = testPath => new Promise(resolve => {
   let score = 100;
   let instances = 5;
-  const proc2 = spawn.sync('ls',  { cwd: testPath, stdio: 'inherit' });
+  const proc2 = spawn.sync('ls',  { cwd: '../', stdio: 'inherit' });
   const proc = spawn.sync('../backend-metrics/node_js/node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
   { cwd: testPath, stdio: 'inherit' });
   console.log(proc);
