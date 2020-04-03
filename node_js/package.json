@@ -9,8 +9,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "cross-spawn": "^7.0.1",
+    "jsinspect": "^0.12.7",
     "minimist": "^1.2.0",
     "npm-check": "^5.9.0",
+    "patch-package": "^6.2.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "shelljs": "^0.8.3"

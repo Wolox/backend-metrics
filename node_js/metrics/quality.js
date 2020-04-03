@@ -1,36 +1,30 @@
 /* eslint-disable */
 
-const shell = require('shelljs');
-shell.config.silent = true;
+const spawn = require('cross-spawn');
 const results = [];
 
-const getMatches = (instances, testPath) => {
-  const inspectResult = shell.exec(
-    `./node_modules/.bin/jsinspect -I -L -m ${instances} -t 20 --ignore "migrations|test|coverage" ${testPath}`
-  );
-  const auxString = inspectResult.stdout.slice(0, inspectResult.lastIndexOf('matches'));
-  const matches = auxString.slice(auxString.lastIndexOf('\n'));
-  return parseInt(matches);
-};
-
-const getMatchesWithXInstances = (instances, testPath) =>
-  getMatches(instances, testPath) - getMatches(instances + 1, testPath);
-
-exports.checkInspect = async testPath => {
+exports.checkInspect = testPath => new Promise(resolve => {
   let score = 100;
-  let instances = 2;
+  let instances = 50;
   let matches = -1;
-  while (matches !== 0 && instances <= 11) {
-    matches = await getMatchesWithXInstances(instances, testPath);
-    // eslint-disable-next-line
+  const proc = spawn('../backend-metrics/node_js/node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
+  { cwd: testPath });
+  let output = '';
+  proc.stdout.on('data', (chunk) => {
+    output += chunk.toString();
+  });
+  proc.on('exit', () => {
+    console.log('--------------------------------------------------------');
+    console.log((output));
+    console.log('asd');
     score = score - matches * (instances / 4);
     instances++;
-  }
-  results.push({
-    metric: 'CODE QUALITY',
-    description: 'Puntaje basado en cantidad de codigo duplicado',
-    value: score || 'No jest found'
+    results.push({
+      metric: 'CODE QUALITY',
+      description: 'Puntaje basado en cantidad de codigo duplicado',
+      value: score || 'No jest found'
+    });
+    console.log(results)
+    return resolve(results);
   });
-  return results;
-};
-
+});

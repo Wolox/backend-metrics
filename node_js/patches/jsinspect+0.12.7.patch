@@ -1,0 +1,13 @@
+diff --git a/node_modules/jsinspect/lib/reporters/json.js b/node_modules/jsinspect/lib/reporters/json.js
+index 36ec192..c7334af 100644
+--- a/node_modules/jsinspect/lib/reporters/json.js
++++ b/node_modules/jsinspect/lib/reporters/json.js
+@@ -48,8 +48,6 @@ class JSONReporter extends BaseReporter {
+       instances: match.instances.map(instance => {
+         return {
+           path: this._getRelativePath(instance.filename),
+-          lines: [instance.start.line, instance.end.line],
+-          code: this._getLines(instance)
+         };
+       })
+     });
