@@ -6,8 +6,8 @@ const results = [];
 exports.checkInspect = testPath => new Promise(resolve => {
   let score = 100;
   let instances = 5;
-  const proc2 = spawn.sync('../node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
-  { stdio: 'inherit' });
+  const proc2 = spawn.sync('ls',
+  { stdio: 'inherit', cwd: '/var/lib/jenkins/workspace/backend-metrics/node_js/node_modules/.bin/' });
   console.log(proc2)
   const proc = spawn.sync('/var/lib/jenkins/workspace/backend-metrics/node_js/node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
   { cwd: testPath, stdio: 'inherit' });
