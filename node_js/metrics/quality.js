@@ -6,11 +6,11 @@ const results = [];
 exports.checkInspect = testPath => new Promise(resolve => {
   let score = 100;
   let instances = 5;
-  spawn.sync('../node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
+  const proc2 = spawn.sync('../node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
   { stdio: 'inherit' });
+  console.log(proc2)
   const proc = spawn.sync('/var/lib/jenkins/workspace/backend-metrics/node_js/node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
   { cwd: testPath, stdio: 'inherit' });
-  console.log(proc)
   const matches = JSON.parse(proc.stdout).map(i => parseFloat(i.instances.length / 10)).reduce((prev, next) => prev + next, 0);
   score = score - matches * (instances / 4);
   instances++;
