@@ -1,7 +1,7 @@
 import os
 
 
-class DependencyMetric():
+class DependencyMetricsHelper():
     def __init__(self):
         self.direct_dependencies = set()
         self.indirect_dependencies = set()
@@ -14,9 +14,11 @@ class DependencyMetric():
         # remove spaces
         dependencies_tree = dependencies_tree.replace('\n\n', '\n')
         dependencies = dependencies_tree.split('\n')
+        dependency_metrics = DependencyMetrics()
+
         for dependency in dependencies:
             if((dependency.startswith('+-') or dependency.startswith('\-')) and not dependency.endswith('(*)')):
-                self.direct_dependencies.add(dependency.split(' ', 1)[-1])
+                dependency_metrics.direct_dependencies.add(dependency.split(' ', 1)[-1])
 
             # If line does not start with "+"" or "\"", it may start with a white space or "|"", so it's a sub-dependency, else it's a comment
             elif((dependency.lstrip().startswith('+-') or dependency.lstrip().startswith('|') or dependency.lstrip().startswith('\-'))
@@ -30,8 +32,12 @@ class DependencyMetric():
                 elif '\-' in dependency:
                     clean_line_indirect_dependency = dependency.split(
                         '\-', 1)[-1].split(' ', 1)[-1]
-                self.indirect_dependencies.add(clean_line_indirect_dependency)
+                dependency_metrics.indirect_dependencies.add(clean_line_indirect_dependency)
+        return dependency_metrics
 
-        print('Direct dependencies: ' + str(len(self.direct_dependencies)))
-        print('------------------------------')
-        print('Indirect dependencies: ' + str(len(self.indirect_dependencies)))
+class DependencyMetrics:
+    def __init__(self):
+        self.direct_dependencies = set()
+        self.indirect_dependencies = set()
+        self.total_direct_dependencies = 0
+        self.total_indirect_dependencies = 0

@@ -1,17 +1,71 @@
-from coverage import Coverage
-from dependencies import DependencyMetric
+import argparse
+import requests
+from coverage import CoverageMetricsHelper
+from dependencies import DependencyMetricsHelper
 from quality import Quality
 
-coverage_metric = Coverage()
-dependency_metric = DependencyMetric()
+parser = argparse.ArgumentParser()
 
-print('Code coverage metrics:\n')
-coverage_metric.calculate_code_coverage()
-print('\n==============================\n')
-print('Dependency metrics:\n')
-dependency_metric.calculate_dependencies_metrics()
-print('\n==============================\n')
-print('Quality metrics:\n')
-quality = Quality(coverage_metric.cyclomatic_complexity,
-                  coverage_metric.total_lines_code)
-quality.calculate_quality()
+parser.add_argument("--metrics_url", "-m", help = "Server URL")
+parser.add_argument("--tech", "-t", help = "Project technology")
+parser.add_argument("--env", "-b", help = "Environment")
+parser.add_argument("--repository", "-r", help = "Repository name")
+parser.add_argument("--project_name", "-p", help = "Project name")
+
+args = parser.parse_args()
+
+metrics_url = args.metrics_url
+metrics_url = "https://backendmetrics.engineering.wolox.com.ar/metrics" if metrics_url is None else metrics_url
+
+tech = args.tech
+tech = "java" if tech is None else tech
+
+env = args.env
+env = "development" if env is None else env
+
+repository = args.repository
+project_name = args.project_name
+
+# Calculate metrics
+
+coverage_metrics = CoverageMetricsHelper().calculate_code_coverage()
+dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics()
+quality_metris = Quality(coverage_metrics.cyclomatic_complexity,
+                         coverage_metrics.total_lines_code).calculate_quality()
+
+# Send request to server
+
+body = {
+    "tech": tech,
+    "env": env,
+    "repo_name": repository,
+    "project_name": project_name,
+    "metrics": [
+      {
+        "name": "code-coverage",
+        "value": coverage_metrics.code_coverage,
+        "version": "1.0"
+      },
+      {
+        "name": "code-quality",
+        "value": 0,
+        "version": "1.0"
+      },
+      {
+        "name": "direct-dependencies",
+        "value": dependency_metric.total_direct_dependencies,
+        "version": "1.0"
+      },
+      {
+        "name": "indirect-dependencies",
+        "value": dependency_metric.total_indirect_dependencies,
+        "version": "1.0"
+      }
+    ]
+  }
+
+print(body)
+
+x = requests.post(metrics_url, json = body)
+
+print(x.content)
