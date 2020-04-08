@@ -34,14 +34,7 @@ const runAllChecks = async () => {
   const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
   const projectPath = `../../${repository}` 
 
-  console.log('Evaluating code codeQuality');
   const codeQuality = await checkInspect(projectPath);
-  console.log('Checking build time');
-  const buildTime = await getBuildTime(projectPath);
-  console.log('Checking dependencies');
-  const dependencies = await getDependencies(projectPath);
-  console.log('Checking coverage');
-  const codeCoverage = await checkCoverage(projectPath);
 
   const metrics = [
     {
