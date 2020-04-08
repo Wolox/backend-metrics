@@ -6,8 +6,8 @@ const results = [];
 exports.checkInspect = testPath => new Promise(resolve => {
   let score = 100;
   let instances = 5;
-  const proc = spawn.sync('../backend-metrics/node_js/node_modules/.bin/jsinspect', ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],
-  { cwd: testPath });
+  const proc = spawn.sync('./node_modules/.bin/jsinspect',
+    ['-I', '-L', '-m' ,instances, '-t' ,'20', '--ignore' ,"migrations|test|coverage", '--reporter', 'json'],  { cwd: testPath });
   const matches = JSON.parse(proc.stdout).map(i => parseFloat(i.instances.length / 10)).reduce((prev, next) => prev + next, 0);
   score = score - matches * (instances / 4);
   instances++;
