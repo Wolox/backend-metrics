@@ -30,6 +30,10 @@ class DependencyMetricsHelper():
                     clean_line_indirect_dependency = dependency.split(
                         '\-', 1)[-1].split(' ', 1)[-1]
                 dependency_metrics.indirect_dependencies.add(clean_line_indirect_dependency)
+
+        print('Direct dependencies: ' + str(dependency_metrics.total_direct_dependencies()))
+        print('Indirect dependencies: ' + str(dependency_metrics.total_indirect_dependencies()))
+
         return dependency_metrics
 
 class DependencyMetrics:

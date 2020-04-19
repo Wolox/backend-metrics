@@ -35,6 +35,7 @@ class CoverageMetricsHelper:
         metrics = self.set_variables()
         metrics.code_coverage = (metrics.conditions_to_cover - metrics.uncovered_conditions + metrics.lc) \
             / (metrics.conditions_to_cover + metrics.lines_to_cover) * 100
+        print('Code coverage ratio: ' + str(round(metrics.code_coverage, 2)) + "%")
         return metrics
 
 class CoverageMetrics:
