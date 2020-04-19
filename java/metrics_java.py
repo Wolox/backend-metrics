@@ -48,24 +48,23 @@ body = {
       },
       {
         "name": "code-quality",
-        "value": 0,
+        "value": quality_metris.quality_score(),
         "version": "1.0"
       },
       {
         "name": "direct-dependencies",
-        "value": dependency_metric.total_direct_dependencies,
+        "value": dependency_metric.total_direct_dependencies(),
         "version": "1.0"
       },
       {
         "name": "indirect-dependencies",
-        "value": dependency_metric.total_indirect_dependencies,
+        "value": dependency_metric.total_indirect_dependencies(),
         "version": "1.0"
       }
     ]
   }
 
+print('Sending metrics to server:\n')
 print(body)
 
 x = requests.post(metrics_url, json = body)
-
-print(x.content)

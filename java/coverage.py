@@ -30,6 +30,7 @@ class CoverageMetricsHelper:
         return metrics
 
     def calculate_code_coverage(self):
+        os.system('./gradlew test')
         os.system('./gradlew jacocoTestReport')
         metrics = self.set_variables()
         metrics.code_coverage = (metrics.conditions_to_cover - metrics.uncovered_conditions + metrics.lc) \

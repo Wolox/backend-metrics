@@ -5,12 +5,9 @@ class DependencyMetricsHelper():
     def __init__(self):
         self.direct_dependencies = set()
         self.indirect_dependencies = set()
-        self.total_direct_dependencies = 0
-        self.total_indirect_dependencies = 0
 
     def calculate_dependencies_metrics(self):
-        dependencies_tree = os.popen(
-            './gradlew dependencies').read()
+        dependencies_tree = os.popen('./gradlew dependencies').read()
         # remove spaces
         dependencies_tree = dependencies_tree.replace('\n\n', '\n')
         dependencies = dependencies_tree.split('\n')
@@ -39,5 +36,9 @@ class DependencyMetrics:
     def __init__(self):
         self.direct_dependencies = set()
         self.indirect_dependencies = set()
-        self.total_direct_dependencies = 0
-        self.total_indirect_dependencies = 0
+    
+    def total_direct_dependencies(self):
+        return len(self.direct_dependencies)
+
+    def total_indirect_dependencies(self):
+        return len(self.indirect_dependencies)
