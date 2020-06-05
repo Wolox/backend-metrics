@@ -31,7 +31,7 @@ const crashesCheck = async (projectName, environmentInfo, monitoringTool) => {
       value: sumOfCrashes
     });
   } else {
-    environmentInfo.environments.map(env => 
+    environmentInfo.environments.map(env =>
       console.log(red, `No es posible obtener los errores en ambiente ${env} con el paquete de monitoreo encontrado`));
     return Promise.resolve({
       metric: environmentInfo.metricName,
@@ -50,7 +50,7 @@ const pkgInstalled = (pkg, projectPath) => {
 module.exports = async (projectName, projectPath) => {
   let monitoringToolInstalled = '';
   monitoringToolInstalled = monitoringTools.find(pkg => pkgInstalled(pkg, projectPath));
-  (!!monitoringToolInstalled) ? 
+  (!!monitoringToolInstalled) ?
     console.log(green, `El paquete npm de monitoreo '${monitoringToolInstalled}' esta instalado`) :
     console.log(red, `No se encontro paquete npm de monitoreo instalado`);
   const crashesMetrics = await Promise.all([
