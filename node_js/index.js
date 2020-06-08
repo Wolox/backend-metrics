@@ -7,6 +7,7 @@ const { checkInspect } = require('./metrics/quality.js');
 const { checkCoverage } = require('./metrics/coverage_jest.js');
 const { buildMetrics, saveMetrics } = require('./utils/save_metrics');
 const crashesChecks = require('./metrics/crashes_checks');
+const { getTransactionMetrics } = require('./metrics/transactions_metrics');
 
 const BUILD_TIME = 'build-time';
 const DIRECT_DEPENDENCIES = 'direct-dependencies';
@@ -15,6 +16,9 @@ const CODE_COVERAGE = 'code-coverage';
 const CODE_QUALITY = 'code-quality';
 const PRODUCTION_CRASHES = 'production-crashes';
 const STAGE_CRASHES = 'stage-crashes';
+const LATENCY_AVERAGE = 'latency';
+const ERROR_RATE = 'error_rate';
+const THROUGHPUT = 'throughput';
 
 const NODE_METRICS_URL = 'https://backendmetrics.engineering.wolox.com.ar/metrics';
 const NODE_TECH = 'node_js';
@@ -47,6 +51,8 @@ const runAllChecks = async () => {
   const codeCoverage = await checkCoverage(projectPath);
   console.log('Checking crashes');
   const crashes = await crashesChecks(projectName, projectPath);
+  console.log('Getting transaction metrics from Elastic APM');
+  const transactions = await getTransactionMetrics(projectName);
 
   const metrics = [
     {
@@ -82,6 +88,21 @@ const runAllChecks = async () => {
     {
       name: STAGE_CRASHES,
       value: parseFloat(crashes[1].value),
+      version: '1.0'
+    },
+    {
+      name: LATENCY_AVERAGE,
+      value: transactions.latencyAverage,
+      version: '1.0'
+    },
+    {
+      name: ERROR_RATE,
+      value: transactions.errorRate,
+      version: '1.0'
+    },
+    {
+      name: THROUGHPUT,
+      value: transactions.throughput,
       version: '1.0'
     }
   ];

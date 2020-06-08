@@ -1,8 +1,8 @@
+const { pkgInstalled } = require('../utils/packages');
 const ElasticApmService = require('../../services/elastic_apm');
 const { DEFAULT_ENVIRONMENTS_INFO } = require('./utils/constants');
 const { green, red } = require('./utils/colors');
 const monitoringTools = require('./utils/monitoring_tools');
-const shell = require('shelljs');
 
 const crashesCheck = async (projectName, environmentInfo, monitoringTool) => {
   let arrayOfData
@@ -31,11 +31,6 @@ const crashesCheck = async (projectName, environmentInfo, monitoringTool) => {
     environments: environmentInfo.environments,
     value: sumOfCrashes
   };
-};
-
-const pkgInstalled = (pkg, projectPath) => {
-  const shellRes = shell.exec(`npm ls | grep ${pkg}`, { silent: true, cwd: projectPath });
-  return shellRes.stdout !== '' && shellRes.stdout.includes(pkg);
 };
 
 module.exports = async (projectName, projectPath) => {
