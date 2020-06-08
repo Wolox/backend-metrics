@@ -37,6 +37,24 @@ const getArgs = () => {
   };
 };
 
+const mapTransactionsToMetrics = transactions => transactions ? [
+  {
+    name: LATENCY_AVERAGE,
+    value: transactions.latencyAverage,
+    version: '1.0'
+  },
+  {
+    name: ERROR_RATE,
+    value: transactions.errorRate,
+    version: '1.0'
+  },
+  {
+    name: THROUGHPUT,
+    value: transactions.throughput,
+    version: '1.0'
+  }
+] : [];
+
 const runAllChecks = async () => {
   const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
   const projectPath = `../../${repository}`;
@@ -90,21 +108,7 @@ const runAllChecks = async () => {
       value: parseFloat(crashes[1].value),
       version: '1.0'
     },
-    {
-      name: LATENCY_AVERAGE,
-      value: transactions.latencyAverage,
-      version: '1.0'
-    },
-    {
-      name: ERROR_RATE,
-      value: transactions.errorRate,
-      version: '1.0'
-    },
-    {
-      name: THROUGHPUT,
-      value: transactions.throughput,
-      version: '1.0'
-    }
+    ...mapTransactionsToMetrics(transactions)
   ];
   console.log(metrics);
 

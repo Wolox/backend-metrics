@@ -23,8 +23,7 @@ const metricsFromResponse = response => {
 
 exports.getTransactionMetrics = projectName =>
   getTransactionMetrics(projectName, 'production')
-    .then(response => metricsFromResponse(response))
+    .then(metricsFromResponse)
     .catch(error => {
       console.log(`Error when getting a response from Elastic APM: ${error.message}`);
-      throw error;
-    })
+    });
