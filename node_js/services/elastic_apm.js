@@ -1,4 +1,4 @@
-const api = require('../config/api');
+const apmServer = require('./apm_auth');
 
 module.exports = {
   getProjectEnvironmentErrors: (projectName, environment) => {
@@ -28,6 +28,6 @@ module.exports = {
       }
     };
     const url = `/*-error-*/_count`;
-    return api.post(url, body);
+    return apmServer.post(url, body);
   }
 };
