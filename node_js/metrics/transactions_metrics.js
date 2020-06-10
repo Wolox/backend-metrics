@@ -1,6 +1,6 @@
 const { getTransactionMetrics } = require('../services/elastic_apm');
 
-const MINUTES_PER_WEEK = 7 * 24 * 60;
+const SECONDS_PER_WEEK = 7 * 24 * 60 * 60;
 
 const errorRateFromBuckets = buckets => {
   const totalCount = buckets.reduce((acc, { doc_count }) => acc + doc_count, 0);
@@ -8,7 +8,7 @@ const errorRateFromBuckets = buckets => {
   return errorsCount / totalCount;
 };
 
-const throughputFromRequests = ({ doc_count }) => doc_count / MINUTES_PER_WEEK;
+const throughputFromRequests = ({ doc_count }) => doc_count / SECONDS_PER_WEEK;
 
 const metricsFromResponse = response => {
   const requests = response.data && response.data.aggregations && response.data.aggregations.requests;
@@ -21,8 +21,8 @@ const metricsFromResponse = response => {
   };
 }
 
-exports.getTransactionMetrics = projectName =>
-  getTransactionMetrics(projectName, 'production')
+exports.getTransactionMetrics = (projectName, environment = 'production') =>
+  getTransactionMetrics(projectName, environment)
     .then(metricsFromResponse)
     .catch(error => {
       console.log(`Error when getting a response from Elastic APM: ${error.message}`);

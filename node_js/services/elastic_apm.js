@@ -48,6 +48,7 @@ module.exports = {
             bool: {
               filter: [
                 ...projectFilters(projectName, environment),
+                { match: { 'transaction.type': 'request' } },
                 { range: oneWeekAgo }
               ]
             }

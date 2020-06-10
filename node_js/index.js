@@ -17,7 +17,7 @@ const CODE_QUALITY = 'code-quality';
 const PRODUCTION_CRASHES = 'production-crashes';
 const STAGE_CRASHES = 'stage-crashes';
 const LATENCY_AVERAGE = 'latency';
-const ERROR_RATE = 'error_rate';
+const ERROR_RATE = 'error-rate';
 const THROUGHPUT = 'throughput';
 
 const NODE_METRICS_URL = 'https://backendmetrics.engineering.wolox.com.ar/metrics';
@@ -28,12 +28,14 @@ const ENV_BRANCH = 'development';
 
 const getArgs = () => {
   const args = parseArgs(process.argv);
+  const repository = args.repository || args.r || '';
   return {
-    repository: args.repository || args.r || '',
+    repository,
     tech: args.tech || args.t || NODE_TECH,
     projectName: args.projectName || args.p || '',
     branch: args.branch || args.b || ENV_BRANCH,
-    metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL
+    metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL,
+    elasticApmProject: args['elastic-apm-project'] || repository
   };
 };
 
@@ -56,7 +58,7 @@ const mapTransactionsToMetrics = transactions => transactions ? [
 ] : [];
 
 const runAllChecks = async () => {
-  const { repository, tech, projectName, branch: env, metricsUrl } = getArgs();
+  const { repository, tech, projectName, branch: env, metricsUrl, elasticApmProject } = getArgs();
   const projectPath = `../../${repository}`;
 
   console.log('Checking build time');
@@ -70,7 +72,7 @@ const runAllChecks = async () => {
   console.log('Checking crashes');
   const crashes = await crashesChecks(projectName, projectPath);
   console.log('Getting transaction metrics from Elastic APM');
-  const transactions = await getTransactionMetrics(projectName);
+  const transactions = await getTransactionMetrics(elasticApmProject);
 
   const metrics = [
     {
