@@ -1,6 +1,9 @@
 const { getTransactionMetrics } = require('../services/elastic_apm');
+const { pkgInstalled } = require('./utils/packages');
 
 const SECONDS_PER_WEEK = 7 * 24 * 60 * 60;
+
+const isElasticApmEnabled = projectPath => pkgInstalled('elastic-apm-node', projectPath);
 
 const errorRateFromBuckets = buckets => {
   const totalCount = buckets.reduce((acc, { doc_count }) => acc + doc_count, 0);
@@ -21,9 +24,11 @@ const metricsFromResponse = response => {
   };
 }
 
-exports.getTransactionMetrics = (projectName, environment = 'production') =>
-  getTransactionMetrics(projectName, environment)
-    .then(metricsFromResponse)
-    .catch(error => {
-      console.log(`Error when getting a response from Elastic APM: ${error.message}`);
-    });
+exports.getTransactionMetrics = (projectName, projectPath, environment = 'production') =>
+  isElasticApmEnabled(projectPath) ?
+    getTransactionMetrics(projectName, environment)
+      .then(metricsFromResponse)
+      .catch(error => {
+        console.log(`Error when getting a response from Elastic APM: ${error.message}`);
+      })
+    : undefined;

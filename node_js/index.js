@@ -70,9 +70,9 @@ const runAllChecks = async () => {
   console.log('Checking coverage');
   const codeCoverage = await checkCoverage(projectPath);
   console.log('Checking crashes');
-  const crashes = await crashesChecks(projectName, projectPath);
+  const crashes = await crashesChecks(elasticApmProject, projectPath);
   console.log('Getting transaction metrics from Elastic APM');
-  const transactions = await getTransactionMetrics(elasticApmProject);
+  const transactions = await getTransactionMetrics(elasticApmProject, projectPath);
 
   const metrics = [
     {
