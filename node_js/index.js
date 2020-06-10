@@ -15,7 +15,7 @@ const INDIRECT_DEPENDENCIES = 'indirect-dependencies';
 const CODE_COVERAGE = 'code-coverage';
 const CODE_QUALITY = 'code-quality';
 const PRODUCTION_CRASHES = 'production-crashes';
-const STAGE_CRASHES = 'stage-crashes';
+const STAGE_CRASHES = 'pre-production-crashes';
 const LATENCY_AVERAGE = 'latency';
 const ERROR_RATE = 'error-rate';
 const THROUGHPUT = 'throughput';
@@ -118,4 +118,8 @@ const runAllChecks = async () => {
     buildMetrics({ metrics, repository, tech, projectName, env }), metricsUrl);
 };
 
-runAllChecks();
+runAllChecks()
+  .catch(error => {
+    console.error(`Error when running checks: ${error}`);
+    process.exit(1);
+  });
