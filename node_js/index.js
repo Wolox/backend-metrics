@@ -36,7 +36,7 @@ const getArgs = () => {
     projectName: args.projectName || args.p || '',
     branch: args.branch || args.b || ENV_BRANCH,
     metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL,
-    elasticApmProject: args.elasticApmProject || repository
+    elasticApmProject: args['elastic-apm-project'] || repository
   };
 };
 
