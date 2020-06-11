@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+const { resolve: resolvePath } = require('path');
 const parseArgs = require('minimist');
 
 const { getBuildTime, getDependencies } = require('./metrics/general_checks.js');
@@ -31,11 +31,12 @@ const getArgs = () => {
   const repository = args.repository || args.r || '';
   return {
     repository,
+    projectPath: args.d || resolvePath('..', '..', repository),
     tech: args.tech || args.t || NODE_TECH,
     projectName: args.projectName || args.p || '',
     branch: args.branch || args.b || ENV_BRANCH,
     metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL,
-    elasticApmProject: args['elastic-apm-project'] || repository
+    elasticApmProject: args.elasticApmProject || repository
   };
 };
 
@@ -58,8 +59,15 @@ const mapTransactionsToMetrics = transactions => transactions ? [
 ] : [];
 
 const runAllChecks = async () => {
-  const { repository, tech, projectName, branch: env, metricsUrl, elasticApmProject } = getArgs();
-  const projectPath = `../../${repository}`;
+  const {
+    repository,
+    tech,
+    projectName,
+    metricsUrl,
+    elasticApmProject,
+    projectPath,
+    branch: env
+  } = getArgs();
 
   console.log('Checking build time');
   const buildTime = await getBuildTime(projectPath);
