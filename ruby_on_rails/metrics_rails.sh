@@ -1,3 +1,6 @@
+# Move to project's root folder
+cd ${12}
+
 # Check if directory has a Gemfile
 if ! ls Gemfile > /dev/null ; then
   echo "Project is not a Ruby On Rails project"
