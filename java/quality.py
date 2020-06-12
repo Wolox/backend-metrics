@@ -20,12 +20,11 @@ class Quality:
         for elem in root:
             non_duplication_score -= 0.5
 
-        score = self.calculate_score_duplications(non_duplication_score)
         print('Duplicated code metric:\n')
         print('Non duplicate code score: ' + str(non_duplication_score))
         print('------------------------------')
-        print('Score: ' + score)
-        print('------------------------------')
+
+        return non_duplication_score
 
     def calculate_code_smells(self):
         self.set_variables()
@@ -58,49 +57,31 @@ class Quality:
         code_smells_ratio = round(((high_priority_weighing +
                                     medium_priority_weighing + low_priority_weighing) / 3), 2)
 
-        score = str(self.calculate_score_code_smells(code_smells_ratio))
-
         print('Code smells:\n')
         print('Total issues: '+str(total_issues))
         print('High priority: '+str(high_priority))
         print('Medium priority: '+str(medium_priority))
         print('Low priority: '+str(low_priority))
         print('Code smells ratio: ' + str(code_smells_ratio) + "%")
-        print('Score: ' + score)
         print('------------------------------')
 
-        return code_smells_ratio
-
-    def calculate_score_duplications(self, non_duplication_score):
-        score = ''
-        if(non_duplication_score <= 20):
-            score = 'E'
-        elif(non_duplication_score >= 21 and non_duplication_score <= 50):
-            score = 'D'
-        elif(non_duplication_score >= 51 and non_duplication_score <= 60):
-            score = 'C'
-        elif(non_duplication_score >= 61 and non_duplication_score <= 70):
-            score = 'B'
-        else:
-            score = 'A'
-        return score
-
-    def calculate_score_code_smells(self, code_smells_ratio):
-        score = ''
-        if(code_smells_ratio <= 5):
-            score = 'A'
-        elif(code_smells_ratio >= 6 and code_smells_ratio <= 10):
-            score = 'B'
-        elif(code_smells_ratio >= 11 and code_smells_ratio <= 20):
-            score = 'C'
-        elif(code_smells_ratio >= 21 and code_smells_ratio <= 50):
-            score = 'D'
-        else:
-            score = 'E'
-        return score
+        return 100 - code_smells_ratio
 
     def calculate_quality(self):
         self.set_variables()
-        self.calculate_duplicate_code()
-        self.calculate_code_smells()
-        print('Cyclomatic complexity: ' + str(self.cyclomatic_complexity))
+
+        os.system('./gradlew pmdMain')
+        os.system('./gradlew cpdCheck')
+
+        qualityMetrics = QualityMetrics()
+        qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code()
+        qualityMetrics.code_smell_score = self.calculate_code_smells()
+        return qualityMetrics
+
+class QualityMetrics:
+    def __init__(self):
+        self.duplicated_code_percentage = 0
+        self.code_smell_score = 0
+
+    def quality_score(self):
+        return (self.duplicated_code_percentage + self.code_smell_score) / 2
