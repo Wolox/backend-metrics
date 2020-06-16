@@ -40,24 +40,6 @@ const getArgs = () => {
   };
 };
 
-const mapTransactionsToMetrics = transactions => transactions ? [
-  {
-    name: LATENCY_AVERAGE,
-    value: transactions.latencyAverage,
-    version: '1.0'
-  },
-  {
-    name: ERROR_RATE,
-    value: transactions.errorRate,
-    version: '1.0'
-  },
-  {
-    name: THROUGHPUT,
-    value: transactions.throughput,
-    version: '1.0'
-  }
-] : [];
-
 const runAllChecks = async () => {
   const {
     repository,

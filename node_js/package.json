@@ -18,6 +18,6 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "shelljs": "^0.8.3",
-    "elastic-apm-client": "file:../elastic_apm_client"
+    "elastic-apm-client": "../elastic_apm_client"
   }
 }

@@ -30,6 +30,7 @@ const metricsMapping = {
   STAGE_CRASHES: STAGE_CRASHES
 };
 
-exports.formatCrashesMetrics = crashesMetrics => crashesMetrics
-  .filter(({ metric }) => metric === 'PRODUCTION_CRASHES' && metric === 'STAGE_CRASHES')
-  .map(({ metric, value }) => ({ name: metricsMapping[metric], value, version: '1.0' }));
+exports.formatCrashesMetrics = crashesMetrics =>
+  crashesMetrics
+    .filter(({ metric }) => metric in metricsMapping)
+    .map(({ metric, value }) => ({ name: metricsMapping[metric], value, version: '1.0' }));

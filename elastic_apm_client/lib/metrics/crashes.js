@@ -1,5 +1,5 @@
-const { getProjectEnvironmentErrors } = require('../../services/elastic_apm');
-const environMentsInfo = require('./envirvonments_info');
+const { getProjectEnvironmentErrors } = require('../services/elastic_apm');
+const environMentsInfo = require('./environments_info');
 
 const crashesCheck = async (projectName, environmentInfo) => {
   arrayOfData = await Promise.all(
@@ -31,6 +31,6 @@ exports.getCrashesMetrics = async (projectName) => {
     crashesCheck(projectName, environMentsInfo.STAGE),
     crashesCheck(projectName, environMentsInfo.DEVELOPMENT)
   ]);
-  console.log(green, 'Chequeos de crashes terminados con exito ✓');
+  console.log('Chequeos de crashes terminados con exito ✓');
   return crashesMetrics;
 };
