@@ -1,5 +1,8 @@
 const { pkgInstalled } = require('../utils/packages');
-const ElasticApmService = require('../../services/elastic_apm');
+// const ElasticApmService = require('../../services/elastic_apm');
+
+const apm = require('elastic-apm-client');
+
 const { DEFAULT_ENVIRONMENTS_INFO } = require('./utils/constants');
 const { green, red } = require('./utils/colors');
 const monitoringTools = require('./utils/monitoring_tools');
@@ -33,7 +36,20 @@ const crashesCheck = async (projectName, environmentInfo, monitoringTool) => {
   };
 };
 
+const test = test => {
+  ElasticApmService.getProjectEnvironmentErrors('zecat-ecommerce-node', 'stage')
+    .then(response => {
+      if (response.data.count === 0) console.log(red, `El ambiente ${environment} del proyecto no tiene errores`);
+      return response.data.count;
+    })
+    .catch(err => {
+      console.log(red, `Hubo un error y no se pudo conectar a kibana en el ambiente ${environment}`);
+      return 0;
+    })
+};
+
 module.exports = async (projectName, projectPath) => {
+  test();
   let monitoringToolInstalled = '';
   monitoringToolInstalled = monitoringTools.find(pkg => pkgInstalled(pkg, projectPath));
   (!!monitoringToolInstalled) ?
