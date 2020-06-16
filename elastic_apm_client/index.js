@@ -1,1 +1,3 @@
-module.exports = require('./lib/elastic_apm');
+const { buildClient } = require('./lib/client');
+
+module.exports = { buildClient };
