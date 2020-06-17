@@ -1,12 +1,3 @@
-# Move to project's root folder
-cd ${12}
-
-# Check if directory has a Gemfile
-if ! ls Gemfile > /dev/null ; then
-  echo "Project is not a Ruby On Rails project"
-  exit
-fi
-
 while test -n "$1"; do # parsing args options
   case "$1" in
     -m|--metricsUrl|--metrics_url)
@@ -33,8 +24,21 @@ while test -n "$1"; do # parsing args options
       elastic_apm_project=$2
       shift 2
       ;;
+    -d|--directory)
+      directory=$2
+      shift 2
+      ;;
   esac
 done
+
+# Move to project's root folder
+cd "${directory}"
+
+# Check if directory has a Gemfile
+if ! ls Gemfile > /dev/null ; then
+  echo "Project is not a Ruby On Rails project"
+  exit
+fi
 
 # args options or default values
 DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
