@@ -5,4 +5,5 @@ rvm:
 script:
   - bundle exec rubocop --require rubocop-rails app spec
   - bundle exec rspec spec -fd
+  - npm link ../elastic_apm_client
   - sh metrics_rails.sh

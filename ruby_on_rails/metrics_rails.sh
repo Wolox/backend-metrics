@@ -69,6 +69,10 @@ while test -n "$1"; do # parsing args options
       project_name=$2
       shift 2
       ;;
+    -e|--elastic-apm-project|--elasticApmProject)
+      elastic_apm_project=$2
+      shift 2
+      ;;
   esac
 done
 
@@ -88,12 +92,7 @@ direct_dependencies="${direct_dependencies:-$UNDEFINED_VALUE}"
 indirect_dependencies="${indirect_dependencies:-$UNDEFINED_VALUE}"
 build_time="${build_time:-$UNDEFINED_VALUE}"
 
-curl -i \
-  --request POST \
-  ${metrics_url} \
-  --header "Accept: application/json" \
-  --header "Content-Type: application/json" \
-  --data '{
+data='{
     "tech": '\""${tech}"\"',
     "env": '\""${branch}"\"',
     "repo_name": '\""${repo_name}"\"',
@@ -126,3 +125,23 @@ curl -i \
       }
     ]
   }'
+
+echo 'Getting elastic APM Metrics'
+elastic_apm_metrics=$(elastic-apm-client -e ${elastic_apm_project})
+
+if [ $? -eq 0 ]; then
+    echo "${elastic_apm_metrics}\n"
+    data=$(echo "${data}" | jq ".metrics += ${elastic_apm_metrics}") 
+else
+    echo 'Fail to get Elastic APM metrics'
+fi
+
+echo "Sending metrics to API URL ${metrics_url}"
+echo "${data}\n"
+
+curl -i \
+  --request POST \
+  ${metrics_url} \
+  --header "Accept: application/json" \
+  --header "Content-Type: application/json" \
+  --data "${data}"
