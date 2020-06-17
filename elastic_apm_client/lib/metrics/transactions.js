@@ -13,7 +13,10 @@ const throughputFromRequests = ({ doc_count }) => doc_count / SECONDS_PER_WEEK;
 const metricsFromResponse = response => {
   const requests = response.data && response.data.aggregations && response.data.aggregations.requests;
   if (!requests) throw new Error('Got invalid response from Elastic APM');
-  if (requests.doc_count === 0) throw new Error('No transactions were found for this environment in the last week');
+  if (requests.doc_count === 0) {
+    console.log('No transactions were found for this environment in the last week');
+    return;
+  };
   return {
     latencyAverage: requests.latency_average.value / 1000,
     errorRate: errorRateFromBuckets(requests.response_status.buckets),
