@@ -1,3 +1,6 @@
+# Linking elastic apm client binaries
+sudo npm link ../elastic_apm_client
+
 while test -n "$1"; do # parsing args options
   case "$1" in
     -m|--metricsUrl|--metrics_url)
