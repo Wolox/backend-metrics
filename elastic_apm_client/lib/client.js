@@ -2,8 +2,7 @@ const { getCrashesMetrics } = require('./metrics/crashes');
 const { getTransactionMetrics } = require('./metrics/transactions');
 const { formatCrashesMetrics, formatTransactionMetrics } = require('./mappers');
 
-class ElasticAPMClientError extends Error {
-}
+class ElasticAPMClientError extends Error { }
 
 class ElasticAPMClient {
   constructor(projectName) {
@@ -16,10 +15,7 @@ class ElasticAPMClient {
     ]).then(([crashesResponse, transactionsResponse]) => [
       ...formatCrashesMetrics(crashesResponse),
       ...formatTransactionMetrics(transactionsResponse)
-    ]
-    ).catch(e => {
-      return Promise.reject(new ElasticAPMClientError(e))
-    });
+    ]).catch(e => Promise.reject(new ElasticAPMClientError(e)));
   }
 }
 

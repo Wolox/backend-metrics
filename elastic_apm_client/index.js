@@ -1,3 +1,1 @@
-const { buildClient } = require('./lib/client');
-
-module.exports = { buildClient };
+module.exports = require('./lib/client');;
