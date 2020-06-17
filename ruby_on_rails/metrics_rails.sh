@@ -1,5 +1,7 @@
 # Linking elastic apm client binaries
-sudo npm link ../elastic_apm_client
+ELASTIC_APM_CLIENT_PATH=${PWD}/../elastic_apm_client
+
+cd ${ELASTIC_APM_CLIENT_PATH} && npm install
 
 while test -n "$1"; do # parsing args options
   case "$1" in
@@ -60,7 +62,7 @@ indirect_dependencies="${indirect_dependencies:-$UNDEFINED_VALUE}"
 build_time="${build_time:-$UNDEFINED_VALUE}"
 
 echo 'Getting elastic APM Metrics'
-elastic_apm_metrics=$(elastic-apm-client -e ${elastic_apm_project})
+elastic_apm_metrics=$(${ELASTIC_APM_CLIENT_PATH}/bin/metrics_cli.js -e ${elastic_apm_project})
 
 if [ $? -eq 0 ]; then
     echo 'Success when getting Elastic APM Metrics'
