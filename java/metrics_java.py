@@ -3,6 +3,7 @@ import requests
 from coverage import CoverageMetricsHelper
 from dependencies import DependencyMetricsHelper
 from quality import Quality
+from elastic_metrics import ElasticMetrics
 
 parser = argparse.ArgumentParser()
 
@@ -11,6 +12,7 @@ parser.add_argument("--tech", "-t", help = "Project technology")
 parser.add_argument("--env", "-b", help = "Environment")
 parser.add_argument("--repository", "-r", help = "Repository name")
 parser.add_argument("--project_name", "-p", help = "Project name")
+parser.add_argument("--elastic_apm_project", "-e", help = "Project name on Elastic APM")
 
 args = parser.parse_args()
 
@@ -33,14 +35,7 @@ dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics()
 quality_metris = Quality(coverage_metrics.cyclomatic_complexity,
                          coverage_metrics.total_lines_code).calculate_quality()
 
-# Send request to server
-
-body = {
-    "tech": tech,
-    "env": env,
-    "repo_name": repository,
-    "project_name": project_name,
-    "metrics": [
+metrics = [
       {
         "name": "code-coverage",
         "value": coverage_metrics.code_coverage,
@@ -62,9 +57,27 @@ body = {
         "version": "1.0"
       }
     ]
+
+elastic_apm_project = args.elastic_apm_project
+if elastic_apm_project is not None:
+  elastic_apm_metrics = ElasticMetrics(elastic_apm_project).get_metrics()
+  metrics.extend(elastic_apm_metrics)
+
+# Send request to server
+
+body = {
+    "tech": tech,
+    "env": env,
+    "repo_name": repository,
+    "project_name": project_name,
+    "metrics": metrics
   }
 
 print('Sending metrics to server:\n')
 print(body)
 
 x = requests.post(metrics_url, json = body)
+
+print('Response:\n')
+print(x.status_code)
+print(x.json())
