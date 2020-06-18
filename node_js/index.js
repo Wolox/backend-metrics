@@ -1,24 +1,19 @@
 /* eslint-disable */
 const { resolve: resolvePath } = require('path');
 const parseArgs = require('minimist');
+const { buildClient } = require('elastic-apm-client')
 
 const { getBuildTime, getDependencies } = require('./metrics/general_checks.js');
 const { checkInspect } = require('./metrics/quality.js');
 const { checkCoverage } = require('./metrics/coverage_jest.js');
 const { buildMetrics, saveMetrics } = require('./utils/save_metrics');
-const crashesChecks = require('./metrics/crashes_checks');
-const { getTransactionMetrics } = require('./metrics/transactions_metrics');
+const { pkgInstalled } = require('./utils/packages');
 
 const BUILD_TIME = 'build-time';
 const DIRECT_DEPENDENCIES = 'direct-dependencies';
 const INDIRECT_DEPENDENCIES = 'indirect-dependencies';
 const CODE_COVERAGE = 'code-coverage';
 const CODE_QUALITY = 'code-quality';
-const PRODUCTION_CRASHES = 'production-crashes';
-const STAGE_CRASHES = 'pre-production-crashes';
-const LATENCY_AVERAGE = 'latency';
-const ERROR_RATE = 'error-rate';
-const THROUGHPUT = 'throughput';
 
 const NODE_METRICS_URL = 'https://backendmetrics.engineering.wolox.com.ar/metrics';
 const NODE_TECH = 'node_js';
@@ -40,23 +35,17 @@ const getArgs = () => {
   };
 };
 
-const mapTransactionsToMetrics = transactions => transactions ? [
-  {
-    name: LATENCY_AVERAGE,
-    value: transactions.latencyAverage,
-    version: '1.0'
-  },
-  {
-    name: ERROR_RATE,
-    value: transactions.errorRate,
-    version: '1.0'
-  },
-  {
-    name: THROUGHPUT,
-    value: transactions.throughput,
-    version: '1.0'
+const tryGetElasticMetrics = async (elasticApmProject, projectPath) => {
+  if (!pkgInstalled('elastic-apm', projectPath)) return [];
+  
+  const elasticClient = buildClient(elasticApmProject);
+  try {
+    return await elasticClient.getMetrics();
+  } catch (e) {
+    console.log(`Can not get metrics from Elastic APM. Error: ${e.message}`);
+    return [];
   }
-] : [];
+}
 
 const runAllChecks = async () => {
   const {
@@ -77,10 +66,8 @@ const runAllChecks = async () => {
   const codeQuality = await checkInspect(projectPath);
   console.log('Checking coverage');
   const codeCoverage = await checkCoverage(projectPath);
-  console.log('Checking crashes');
-  const crashes = await crashesChecks(elasticApmProject, projectPath);
-  console.log('Getting transaction metrics from Elastic APM');
-  const transactions = await getTransactionMetrics(elasticApmProject, projectPath);
+  console.log('Getting Elastic APM Metrics');
+  const elasticMetrics = await tryGetElasticMetrics(elasticApmProject, projectPath);
 
   const metrics = [
     {
@@ -108,17 +95,7 @@ const runAllChecks = async () => {
       value: parseFloat(codeQuality[0].value),
       version: '1.0'
     },
-    {
-      name: PRODUCTION_CRASHES,
-      value: parseFloat(crashes[0].value),
-      version: '1.0'
-    },
-    {
-      name: STAGE_CRASHES,
-      value: parseFloat(crashes[1].value),
-      version: '1.0'
-    },
-    ...mapTransactionsToMetrics(transactions)
+    ...elasticMetrics
   ];
   console.log(metrics);
 

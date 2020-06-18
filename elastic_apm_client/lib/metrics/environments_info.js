@@ -1,4 +1,4 @@
-module.exports.DEFAULT_ENVIRONMENTS_INFO = {
+module.exports = {
   PRODUCTION: {
     metricName: 'PRODUCTION_CRASHES',
     environments: ['production'],
