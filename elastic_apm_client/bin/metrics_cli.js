@@ -8,8 +8,6 @@ const { buildClient } = require('../lib/client');
 program
   .requiredOption('-e --elastic-apm-project <name>', 'Project name on Elastic APM')
   .option('-o --output <file>', 'Output file', process.stdout.fd)
-  // .option('-r --repository <name>', 'Repository name')
-  // .option('-p --project <name>', 'Project name')
   .parse(process.argv);
 
 const { elasticApmProject, output } = program;
