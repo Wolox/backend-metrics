@@ -1,8 +1,6 @@
 # Linking elastic apm client binaries
 ELASTIC_APM_CLIENT_PATH=${PWD}/../elastic_apm_client
 
-cd ${ELASTIC_APM_CLIENT_PATH} && npm install
-
 while test -n "$1"; do # parsing args options
   case "$1" in
     -m|--metricsUrl|--metrics_url)
@@ -45,6 +43,13 @@ if ! ls Gemfile > /dev/null ; then
   exit
 fi
 
+if [ -z "$elastic_apm_project" ]; then
+  echo "No elastic-apm-project given."
+  exit
+fi
+
+cd ${ELASTIC_APM_CLIENT_PATH} && npm install
+
 # args options or default values
 DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
 DEFAULT_TECH='ruby_on_rails'
@@ -54,12 +59,6 @@ UNDEFINED_VALUE=-1
 metrics_url="${metrics_url:-$DEFAULT_METRICS_URL}"
 tech="${tech:-$DEFAULT_TECH}"
 branch="${branch:-$DEFAULT_BRANCH}"
-
-code_coverage="${code_coverage:-$UNDEFINED_VALUE}"
-code_quality="${code_quality:-$UNDEFINED_VALUE}"
-direct_dependencies="${direct_dependencies:-$UNDEFINED_VALUE}"
-indirect_dependencies="${indirect_dependencies:-$UNDEFINED_VALUE}"
-build_time="${build_time:-$UNDEFINED_VALUE}"
 
 echo 'Getting elastic APM Metrics'
 elastic_apm_metrics=$(${ELASTIC_APM_CLIENT_PATH}/bin/metrics_cli.js -e ${elastic_apm_project})
