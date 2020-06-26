@@ -7,12 +7,12 @@ class Quality:
         self.cyclomatic_complexity = cyclomatic_complexity
         self.lines_of_code = lines_of_code
 
-    def set_variables(self):
-        self.pmd_report = './build/reports/pmd/main.xml'
-        self.cpd_report = './build/reports/cpd/cpdCheck.xml'
+    def set_variables(self, directory):
+        self.pmd_report = directory + '/build/reports/pmd/main.xml'
+        self.cpd_report = directory + '/build/reports/cpd/cpdCheck.xml'
 
-    def calculate_duplicate_code(self):
-        self.set_variables()
+    def calculate_duplicate_code(self, directory):
+        self.set_variables(directory)
         tree = ET.parse(self.cpd_report)
         root = tree.getroot()
         non_duplication_score = 100
@@ -26,8 +26,8 @@ class Quality:
 
         return non_duplication_score
 
-    def calculate_code_smells(self):
-        self.set_variables()
+    def calculate_code_smells(self, directory):
+        self.set_variables(directory)
         tree = ET.parse(self.pmd_report)
         root = tree.getroot()
         total_issues = 0
@@ -67,15 +67,15 @@ class Quality:
 
         return 100 - code_smells_ratio
 
-    def calculate_quality(self):
-        self.set_variables()
+    def calculate_quality(self, directory):
+        self.set_variables(directory)
 
-        os.system('./gradlew pmdMain')
-        os.system('./gradlew cpdCheck')
+        os.system(directory + '/gradlew pmdMain')
+        os.system(directory + '/gradlew cpdCheck')
 
         qualityMetrics = QualityMetrics()
-        qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code()
-        qualityMetrics.code_smell_score = self.calculate_code_smells()
+        qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code(directory)
+        qualityMetrics.code_smell_score = self.calculate_code_smells(directory)
         return qualityMetrics
 
 class QualityMetrics:

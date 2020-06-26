@@ -3,8 +3,8 @@ import xml.etree.ElementTree as ET
 
 
 class CoverageMetricsHelper:
-    def set_variables(self):
-        coverage_report_path = './build/reports/jacoco/test/jacocoTestReport.xml'
+    def set_variables(self, directory):
+        coverage_report_path = directory + '/build/reports/jacoco/test/jacocoTestReport.xml'
         tree = ET.parse(coverage_report_path)
         root = tree.getroot()
 
@@ -29,10 +29,10 @@ class CoverageMetricsHelper:
                     metrics.lc = metrics.lines_to_cover - metrics.uncovered_lines
         return metrics
 
-    def calculate_code_coverage(self):
-        os.system('./gradlew test')
-        os.system('./gradlew jacocoTestReport')
-        metrics = self.set_variables()
+    def calculate_code_coverage(self, directory):
+        os.system(directory + '/gradlew test')
+        os.system(directory + '/gradlew jacocoTestReport')
+        metrics = self.set_variables(directory)
         metrics.code_coverage = (metrics.conditions_to_cover - metrics.uncovered_conditions + metrics.lc) \
             / (metrics.conditions_to_cover + metrics.lines_to_cover) * 100
         print('Code coverage ratio: ' + str(round(metrics.code_coverage, 2)) + "%")

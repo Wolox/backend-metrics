@@ -1,5 +1,6 @@
 import argparse
 import requests
+import os
 from coverage import CoverageMetricsHelper
 from dependencies import DependencyMetricsHelper
 from quality import Quality
@@ -13,6 +14,7 @@ parser.add_argument("--env", "-b", help = "Environment")
 parser.add_argument("--repository", "-r", help = "Repository name")
 parser.add_argument("--project_name", "-p", help = "Project name")
 parser.add_argument("--elastic_apm_project", "-e", help = "Project name on Elastic APM")
+parser.add_argument("--directory", "-d", help = "Directory")
 
 args = parser.parse_args()
 
@@ -28,12 +30,15 @@ env = "development" if env is None else env
 repository = args.repository
 project_name = args.project_name
 
+directory = args.directory
+
+os.system('cd ' + directory)
 # Calculate metrics
 
-coverage_metrics = CoverageMetricsHelper().calculate_code_coverage()
-dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics()
+coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(directory)
+dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(directory)
 quality_metris = Quality(coverage_metrics.cyclomatic_complexity,
-                         coverage_metrics.total_lines_code).calculate_quality()
+                         coverage_metrics.total_lines_code).calculate_quality(directory)
 
 metrics = [
       {
