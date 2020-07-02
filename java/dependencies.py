@@ -7,7 +7,7 @@ class DependencyMetricsHelper():
         self.indirect_dependencies = set()
 
     def calculate_dependencies_metrics(self, directory):
-        dependencies_tree = os.popen(directory + '/gradlew dependencies').read()
+        dependencies_tree = os.popen(directory + '/gradlew dependencies -p ' + directory).read()
         # remove spaces
         dependencies_tree = dependencies_tree.replace('\n\n', '\n')
         dependencies = dependencies_tree.split('\n')

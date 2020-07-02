@@ -30,8 +30,8 @@ class CoverageMetricsHelper:
         return metrics
 
     def calculate_code_coverage(self, directory):
-        os.system(directory + '/gradlew test')
-        os.system(directory + '/gradlew jacocoTestReport')
+        os.system(directory + '/gradlew test -p ' + directory)
+        os.system(directory + '/gradlew jacocoTestReport -p ' + directory)
         metrics = self.set_variables(directory)
         metrics.code_coverage = (metrics.conditions_to_cover - metrics.uncovered_conditions + metrics.lc) \
             / (metrics.conditions_to_cover + metrics.lines_to_cover) * 100

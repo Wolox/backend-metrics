@@ -70,8 +70,8 @@ class Quality:
     def calculate_quality(self, directory):
         self.set_variables(directory)
 
-        os.system(directory + '/gradlew pmdMain')
-        os.system(directory + '/gradlew cpdCheck')
+        os.system(directory + '/gradlew pmdMain -p ' + directory)
+        os.system(directory + '/gradlew cpdCheck -p ' + directory)
 
         qualityMetrics = QualityMetrics()
         qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code(directory)
