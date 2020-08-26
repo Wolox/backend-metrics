@@ -60,7 +60,7 @@ if (args.branch || args.b) {
 }
 
 if (args.repository || args.r) {
-  branch = args.repository || args.r;
+  repository = args.repository || args.r;
 }
 
 if (args.tech || args.t) {
