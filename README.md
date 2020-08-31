@@ -23,7 +23,7 @@ In `metrics` step, we should use the same configuration for  `repoName`, `projec
 
 steps:
   config:
-    - rm -rf metrics && mkdir metrics && cp .woloxci/metrics.sh metrics/metrics.sh && chmod +x metrics/metrics.sh
+    - rm -rf metrics && mkdir metrics && wget -O metrics/metrics.sh https://raw.githubusercontent.com/Wolox/backend-metrics/3493da65a51e7800d0a857cc4fd197f278e6e74f/ruby_on_rails/metrics.sh && chmod +x metrics/metrics.sh
     - bundle install | tee -a metrics/bundle_install
   analysis:
     - bundle exec rubycritic --path ./analysis --minimum-score 80 --no-browser | tee -a metrics/rubycritic_report
@@ -48,9 +48,19 @@ indirect_dependencies=$((total_dependencies - direct_dependencies))
 
 # rspec
 code_coverage=$(cat rspec_report | grep Coverage | cut -d " " -f12 | tr -dc '0-9.')
+if [ -z "$code_coverage" ]; then
+  code_coverage=$(cat rspec_report | grep Coverage | cut -d " " -f15 | tr -dc '0-9.')
+fi
 
 # rubycritic
 code_quality=$(cat rubycritic_report | grep Score | cut -d " " -f2)
+
+# rake environment
+echo "Running rake environment to get build time..."
+start=`date +"%s"`
+bundle exec rake environment
+end=`date +%s`
+build_time=$(($end - $start))
 
 # Sending metrics
 echo "Sending metrics to the server..."
