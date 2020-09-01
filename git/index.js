@@ -80,8 +80,8 @@ const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
 
 const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
 Promise.all(gitChecks).then(res => {
-  const pickUpTime = res[0].stats.pr_pick_up_time_avg[0].value;
-  const reviewTime = res[1].stats.pr_review_time_avg[0].value;
+  const pickUpTime = res[0].stats.pr_pick_up_time_avg[0] ? res[0].stats.pr_pick_up_time_avg[0].value : 0;
+  const reviewTime = res[1].stats.pr_review_time_avg[0] ? res[1].stats.pr_review_time_avg[0].value : 0;
   const metrics = [
     {
       name: PICK_UP_TIME,
