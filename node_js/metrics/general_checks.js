@@ -20,7 +20,6 @@ exports.getDependencies = async testPath => {
     installInfo.stdout.search('packages in')
   );
   const currentState = await npmCheck({ cwd: testPath });
-
   const packages = currentState.get('packages');
   generalResult.push({
     metric: 'DIRECT_DEPENDENCIES',
