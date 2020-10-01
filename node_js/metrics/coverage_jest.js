@@ -12,7 +12,7 @@ exports.checkCoverage = async (testPath) => {
   console.log('Empezando coverage para el build...');
   const metrics = [];
   await shell.exec(
-    `npm run test -- --coverage`, { cwd: testPath }
+    `npm run test -- --coverage --coverageReporters="json-summary"`, { cwd: testPath }
   );
   const metricsFile = require(joinPath(testPath, 'coverage', 'coverage-summary.json'));
   const functionPercent = metricsFile.total.functions.pct;
