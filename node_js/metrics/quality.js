@@ -5,18 +5,20 @@ const results = [];
 const qualityJsonFileName = 'quality.json';
 
 const runInspect = (instances, testPath) => new Promise(resolve => {
-  const childProcess = exec(`npx jsinspect -I -L -m ${instances} -t 20 --ignore "migrations|test|coverage|test" --reporter json ${testPath} > ${qualityJsonFileName}`);
-  childProcess.stdout.on('close',()=>  resolve());
+  const childProcess = exec(`npx jsinspect -I -L -m ${instances} -t 20 --ignore "migrations|test|coverage|test" --reporter json ${testPath}`);
+  let data='';
+  childProcess.stdout.on('data',d=>  {
+    data += d;
+  });
+  childProcess.stdout.on('close',()=> {
+    resolve(data);
+  });
 });
 
-const runInspectAndCollectData = async (instances,testPath) => {
-  await runInspect(instances,testPath);
-  const data = await readFileAsync(qualityJsonFileName);
-  await unlinkAsync(qualityJsonFileName);
-  return JSON.parse(data);
-}
+const runInspectAndCollectData = (instances,testPath) =>
+    runInspect(instances,testPath).then(data => JSON.parse(data));
 
-exports.checkInspect = testPath => new Promise( (resolve, reject) => {
+exports.checkInspect = testPath => {
   let score = 100;
   let instances = 5;
   return runInspectAndCollectData(instances,testPath).then(jsonData => {
@@ -28,6 +30,6 @@ exports.checkInspect = testPath => new Promise( (resolve, reject) => {
       description: 'Puntaje basado en cantidad de codigo duplicado',
       value: score || 'No jest found'
     });
-    return resolve(results)
+    return results;
   })
-});
+};
