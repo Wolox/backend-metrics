@@ -11,6 +11,7 @@ parser.add_argument("--tech", "-t", help = "Project technology")
 parser.add_argument("--env", "-b", help = "Environment")
 parser.add_argument("--repository", "-r", help = "Repository name")
 parser.add_argument("--project_name", "-p", help = "Project name")
+parser.add_argument("--key", "-k", help = "Metrics API Key")
 
 args = parser.parse_args()
 
@@ -22,6 +23,9 @@ tech = "java" if tech is None else tech
 
 env = args.env
 env = "development" if env is None else env
+
+api_key = args.key
+api_key = "" if api_key is None else api_key
 
 repository = args.repository
 project_name = args.project_name
@@ -64,7 +68,11 @@ body = {
     ]
   }
 
+headers = {
+  "Authorization": api_key
+}
+
 print('Sending metrics to server:\n')
 print(body)
 
-x = requests.post(metrics_url, json = body)
+x = requests.post(metrics_url, json = body, headers = headers)

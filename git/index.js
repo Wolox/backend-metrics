@@ -52,6 +52,7 @@ let repository = '';
 let tech = 'node';
 let projectName = '';
 let metricsUrl = '';
+let apiKey = '';
 
 const args = parseArgs(process.argv);
 
@@ -75,6 +76,10 @@ if (args.metricsUrl || args.m) {
   metricsUrl = args.metricsUrl || args.m;
 }
 
+if (args.key || args.k) {
+  apiKey = args.key || args.k;
+}
+
 const date = new Date();
 const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
 
@@ -96,7 +101,7 @@ Promise.all(gitChecks).then(res => {
   ];
   console.log(metrics);
   return saveMetrics(
-    buildMetrics({metrics, repository, env: branch, tech, projectName}), metricsUrl)
+    buildMetrics({metrics, repository, env: branch, tech, projectName}), metricsUrl, apiKey)
 });
 
 
