@@ -1,12 +1,15 @@
 /* eslint-disable */
 const requestPromise = require('request-promise');
 
-const saveMetrics = (body, url) =>
+const saveMetrics = (body, url, apiKey) =>
   requestPromise({
     url,
     method: 'post',
     json: true,
     body,
+    headers: {
+      Authorization: apiKey
+    }
 })
 .then(console.log)
 .catch(console.log);

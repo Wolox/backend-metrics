@@ -31,6 +31,10 @@ while test -n "$1"; do # parsing args options
       directory=$2
       shift 2
       ;;
+    -k|--key)
+      api_key=$2
+      shift 2
+      ;;
   esac
 done
 
@@ -54,11 +58,13 @@ cd ${ELASTIC_APM_CLIENT_PATH} && npm install
 DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
 DEFAULT_TECH='ruby_on_rails'
 DEFAULT_BRANCH='development'
+DEFAULT_API_KEY=''
 UNDEFINED_VALUE=-1
 
 metrics_url="${metrics_url:-$DEFAULT_METRICS_URL}"
 tech="${tech:-$DEFAULT_TECH}"
 branch="${branch:-$DEFAULT_BRANCH}"
+api_key="${api_key:-$DEFAULT_API_KEY}"
 
 echo 'Getting elastic APM Metrics'
 elastic_apm_metrics=$(${ELASTIC_APM_CLIENT_PATH}/bin/metrics_cli.js -e ${elastic_apm_project})
@@ -86,4 +92,5 @@ curl -i \
   ${metrics_url} \
   --header "Accept: application/json" \
   --header "Content-Type: application/json" \
+  --header "Authorization: ${api_key}" \
   --data "${data}"

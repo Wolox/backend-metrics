@@ -31,7 +31,8 @@ const getArgs = () => {
     projectName: args.projectName || args.p || '',
     branch: args.branch || args.b || ENV_BRANCH,
     metricsUrl: args.metricsUrl || args.m || NODE_METRICS_URL,
-    elasticApmProject: args['elastic-apm-project'] || repository
+    elasticApmProject: args['elastic-apm-project'] || repository,
+    apiKey: args.key || args.k || ''
   };
 };
 
@@ -55,7 +56,8 @@ const runAllChecks = async () => {
     metricsUrl,
     elasticApmProject,
     projectPath,
-    branch: env
+    branch: env,
+    apiKey
   } = getArgs();
 
   console.log('Checking build time');
@@ -100,7 +102,7 @@ const runAllChecks = async () => {
   console.log(metrics);
 
   return saveMetrics(
-    buildMetrics({ metrics, repository, tech, projectName, env }), metricsUrl);
+    buildMetrics({ metrics, repository, tech, projectName, env }), metricsUrl, apiKey);
 };
 
 runAllChecks()
