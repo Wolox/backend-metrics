@@ -20,117 +20,34 @@ In `metrics` step, we should use the same configuration for  `repoName`, `projec
 
 ```yml
 # .woloxci/config.yml
+...
 
 steps:
   config:
-    - rm -rf metrics && mkdir metrics && wget -O metrics/metrics.sh https://raw.githubusercontent.com/Wolox/backend-metrics/3493da65a51e7800d0a857cc4fd197f278e6e74f/ruby_on_rails/metrics.sh && chmod +x metrics/metrics.sh
+    - rm -rf metrics && mkdir metrics && wget -O metrics/metrics.sh https://raw.githubusercontent.com/Wolox/backend-metrics/master/ruby_on_rails/metrics.sh && chmod +x metrics/metrics.sh
     - bundle install | tee -a metrics/bundle_install
   analysis:
+    - bundle exec rubocop app spec --format simple
     - bundle exec rubycritic --path ./analysis --minimum-score 80 --no-browser | tee -a metrics/rubycritic_report
+  setup_db:
+    - bundle exec rails db:create
+    - bundle exec rails db:schema:load
   test:
     - bundle exec rspec | tee -a metrics/rspec_report
+  security:
+    - bundle exec brakeman --exit-on-error
   metrics:
-    - ./metrics/metrics.sh repository-name 'Change me with project name' development
-```
+    - /metrics/metrics.sh repository-name 'Change me with project name' development
 
+environment:
+  RAILS_ENV: test
+  GIT_COMMITTER_NAME: a
+  GIT_COMMITTER_EMAIL: b
+  LANG: C.UTF-8
+  ROR_WOLOX_METRICS_API_KEY: ror-api-key
 
-
-```bash
-# .woloxci/metrics.sh
-
-# Move to project's root folder
-cd metrics
-
-# bundle install
-direct_dependencies=$(cat bundle_install | grep "Bundle complete" | cut -d " " -f3)
-total_dependencies=$(cat bundle_install | grep "Bundle complete" | cut -d " " -f6)
-indirect_dependencies=$((total_dependencies - direct_dependencies))
-
-# rspec
-code_coverage=$(cat rspec_report | grep Coverage | cut -d " " -f12 | tr -dc '0-9.')
-if [ -z "$code_coverage" ]; then
-  code_coverage=$(cat rspec_report | grep Coverage | cut -d " " -f15 | tr -dc '0-9.')
-fi
-
-# rubycritic
-code_quality=$(cat rubycritic_report | grep Score | cut -d " " -f2)
-
-# rake environment
-echo "Running rake environment to get build time..."
-start=`date +"%s"`
-bundle exec rake environment
-end=`date +%s`
-build_time=$(($end - $start))
-
-# Sending metrics
-echo "Sending metrics to the server..."
-
-# args options or default values
-DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
-DEFAULT_BRANCH='development'
-UNDEFINED_VALUE=-1
-
-repo_name=$1
-project_name=$2
-branch="${3:-$DEFAULT_BRANCH}"
-metrics_url="${4:-$DEFAULT_METRICS_URL}"
-code_coverage="${code_coverage:-$UNDEFINED_VALUE}"
-code_quality="${code_quality:-$UNDEFINED_VALUE}"
-direct_dependencies="${direct_dependencies:-$UNDEFINED_VALUE}"
-indirect_dependencies="${indirect_dependencies:-$UNDEFINED_VALUE}"
-build_time="${build_time:-$UNDEFINED_VALUE}"
-
-# Results
-echo "\nResults"
-echo "Reponame : ${repo_name}"
-echo "Project name : ${project_name}"
-echo "Branch : ${branch}"
-echo "metrics_url : ${metrics_url}"
-echo "Code coverage (simplecov): ${code_coverage}"
-echo "Code quality score (rubycritic): ${code_quality}"
-echo "Direct dependencies: ${direct_dependencies}"
-echo "Indirect dependencies: ${indirect_dependencies}"
-echo "Build time (seconds): ${build_time}"
-
-curl -i \
-  --request POST \
-  ${metrics_url} \
-  --header "Accept: application/json" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "tech": '\""ruby_on_rails"\"',
-    "env": '\""${branch}"\"',
-    "repo_name": '\""${repo_name}"\"',
-    "project_name": '\""${project_name}"\"',
-    "metrics": [
-      {
-        "name": "code-coverage",
-        "value": '${code_coverage}',
-        "version": "1.0"
-      },
-      {
-        "name": "code-quality",
-        "value": '${code_quality}',
-        "version": "1.0"
-      },
-      {
-        "name": "direct-dependencies",
-        "value": '${direct_dependencies}',
-        "version": "1.0"
-      },
-      {
-        "name": "indirect-dependencies",
-        "value": '${indirect_dependencies}',
-        "version": "1.0"
-      },
-      {
-        "name": "build-time",
-        "value": '${build_time}',
-        "version": "1.0"
-      }
-    ]
-  }'
-
+jenkinsEnvironment:
+  - WOLOX_METRICS_API_KEY
 ```
 
 ## Contributing

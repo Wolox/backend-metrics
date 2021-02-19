@@ -1,3 +1,4 @@
+#!/bin/bash
 # Move to project's root folder
 cd metrics
 
@@ -28,15 +29,21 @@ echo "Sending metrics to the server..."
 # args options or default values
 DEFAULT_METRICS_URL='https://backendmetrics.engineering.wolox.com.ar/metrics'
 DEFAULT_BRANCH='development'
-DEFAULT_API_KEY=''
+DEFAULT_API_KEY='ror-empty'
 UNDEFINED_VALUE=-1
 
 repo_name=$1
 project_name=$2
 branch="${3:-$DEFAULT_BRANCH}"
 metrics_url="${4:-$DEFAULT_METRICS_URL}"
-api_key="$WOLOX_METRICS_APY_KEY"
+
+api_key="$WOLOX_METRICS_API_KEY"
+if [[ "$api_key" == "null" ]]
+then 
+  api_key="$ROR_WOLOX_METRICS_API_KEY"
+fi
 api_key="${api_key:-$DEFAULT_API_KEY}"
+
 code_coverage="${code_coverage:-$UNDEFINED_VALUE}"
 code_quality="${code_quality:-$UNDEFINED_VALUE}"
 direct_dependencies="${direct_dependencies:-$UNDEFINED_VALUE}"
