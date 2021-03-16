@@ -9,10 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
     "graphql": "^14.6.0",
     "graphql-request": "^1.8.2",
+    "lodash.flattendeep": "^4.4.0",
     "minimist": "^1.2.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.5"
+    "request-promise": "^4.2.5",
+    "@wolox/git-metrics": "^0.1.1"
   }
 }

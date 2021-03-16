@@ -1,51 +1,9 @@
 /* eslint-disable */
-
-const util = require('util');
-const { request } = require('graphql-request');
+require('dotenv').config();
 const parseArgs = require('minimist');
+const runGitChecks = require('@wolox/git-metrics');
 
-const api = 'https://node-github-stats.herokuapp.com/graphql';
 const {buildMetrics, saveMetrics} = require('./save_metrics');
-
-const PICK_UP_TIME = 'pick-up-time';
-const CODE_REVIEW_AVERAGE_TIME = 'code-review-avg-time';
-
-const generateGitStatsArgsString = args => {
-  let stringArgs = '';
-  Object.keys(args).forEach(key => {
-    const auxString = `${key}: "${args[key]}"`;
-    if (stringArgs === '') {
-      stringArgs = stringArgs.concat(auxString);
-    } else {
-      stringArgs = stringArgs.concat(', ', auxString);
-    }
-  });
-  return stringArgs;
-};
-
-const getAvgPickUpTime = async args => {
-  const argsString = generateGitStatsArgsString(args || {});
-  const query = `query{stats {\
-    pr_pick_up_time_avg(${argsString}) {\
-      tech_name\
-      value\
-    }\
-  }}`;
-  const res = await request(api, query, args);
-  return res;
-};
-
-const getAvgReviewTime = async args => {
-  const argsString = generateGitStatsArgsString(args || {});
-  const query = `query{stats {\
-    pr_review_time_avg(${argsString}) {\
-      tech_name\
-      value\
-    }\
-  }}`;
-  const res = await request(api, query);
-  return res;
-};
 
 let branch = 'development';
 let repository = '';
@@ -53,8 +11,12 @@ let tech = 'node';
 let projectName = '';
 let metricsUrl = '';
 let apiKey = '';
+let organization = 'wolox';
+let gitProvider = '';
 
 const args = parseArgs(process.argv);
+
+console.log(args);
 
 if (args.branch || args.b) {
   branch = args.branch || args.b;
@@ -80,28 +42,17 @@ if (args.key || args.k) {
   apiKey = args.key || args.k;
 }
 
-const date = new Date();
-const twoWeeksBefore = new Date(new Date().getTime() - 2*7*24*60*60*1000);
+if (args.organization || args.o) {
+  organization = args.organization || args.o;
+}
 
-const gitChecks = [getAvgPickUpTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository}), getAvgReviewTime({from: twoWeeksBefore.toISOString(), to: date.toISOString(), repository})];
-Promise.all(gitChecks).then(res => {
-  const pickUpTime = res[0].stats.pr_pick_up_time_avg[0] ? res[0].stats.pr_pick_up_time_avg[0].value : 0;
-  const reviewTime = res[1].stats.pr_review_time_avg[0] ? res[1].stats.pr_review_time_avg[0].value : 0;
-  const metrics = [
-    {
-      name: PICK_UP_TIME,
-      value: parseFloat(pickUpTime),
-      version: '1.0'
-    },
-    {
-      name: CODE_REVIEW_AVERAGE_TIME,
-      value: parseFloat(reviewTime),
-      version: '1.0'
-    },
-  ];
-  console.log(metrics);
-  return saveMetrics(
-    buildMetrics({metrics, repository, env: branch, tech, projectName}), metricsUrl, apiKey)
+if (args.gitProvider || args.g) {
+  gitProvider = args.gitProvider || args.g;
+}
+
+runGitChecks(gitProvider, process.env.OAUTH_TOKEN)(repository, organization).then(metrics => {
+  const validMetrics = metrics.filter((metric) => !!metric.value);
+  const builtMetrics = buildMetrics({ metrics: validMetrics, repository, env: branch, tech, projectName })
+  console.log('Saving the following metrics:', builtMetrics);
+  return saveMetrics(builtMetrics, metricsUrl, apiKey);
 });
-
-
