@@ -12,11 +12,9 @@ let projectName = '';
 let metricsUrl = '';
 let apiKey = '';
 let organization = 'wolox';
-let gitProvider = '';
+let gitProvider = 'github';
 
 const args = parseArgs(process.argv);
-
-console.log(args);
 
 if (args.branch || args.b) {
   branch = args.branch || args.b;
