@@ -48,7 +48,9 @@ if (args.gitProvider || args.g) {
   gitProvider = args.gitProvider || args.g;
 }
 
-runGitChecks(gitProvider, process.env.OAUTH_TOKEN)(repository, organization).then(metrics => {
+const authToken = gitProvider === 'github' ? process.env.OAUTH_TOKEN : process.env.GITLAB_OAUTH_TOKEN;
+
+runGitChecks(gitProvider, authToken)(repository, organization).then(metrics => {
   const validMetrics = metrics.filter((metric) => !!metric.value);
   const builtMetrics = buildMetrics({ metrics: validMetrics, repository, env: branch, tech, projectName })
   console.log('Saving the following metrics:', builtMetrics);
