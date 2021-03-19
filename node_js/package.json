@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "elastic-apm-client": "../elastic_apm_client",
     "jsinspect": "^0.12.7",
