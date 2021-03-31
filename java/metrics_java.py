@@ -1,5 +1,7 @@
 import argparse
 import requests
+import os
+from build_tools import BuildTool
 from coverage import CoverageMetricsHelper
 from dependencies import DependencyMetricsHelper
 from quality import Quality
@@ -30,12 +32,14 @@ api_key = "" if api_key is None else api_key
 repository = args.repository
 project_name = args.project_name
 
+build_tool = BuildTool.MAVEN if 'pom.xml' in os.listdir() else BuildTool.GRADLE
+
+
 # Calculate metrics
 
-coverage_metrics = CoverageMetricsHelper().calculate_code_coverage()
-dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics()
-quality_metris = Quality(coverage_metrics.cyclomatic_complexity,
-                         coverage_metrics.total_lines_code).calculate_quality()
+coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool)
+dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(build_tool)
+quality_metrics = Quality(coverage_metrics.total_lines_code).calculate_quality(build_tool)
 
 # Send request to server
 
@@ -52,7 +56,7 @@ body = {
       },
       {
         "name": "code-quality",
-        "value": quality_metris.quality_score(),
+        "value": quality_metrics.quality_score(),
         "version": "1.0"
       },
       {

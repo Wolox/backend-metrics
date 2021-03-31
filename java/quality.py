@@ -1,18 +1,32 @@
 import os
 import xml.etree.ElementTree as ET
-
+from build_tools import BuildTool
 
 class Quality:
-    def __init__(self, cyclomatic_complexity, lines_of_code):
-        self.cyclomatic_complexity = cyclomatic_complexity
+    def __init__(self, lines_of_code):
         self.lines_of_code = lines_of_code
 
-    def set_variables(self):
-        self.pmd_report = './build/reports/pmd/main.xml'
-        self.cpd_report = './build/reports/cpd/cpdCheck.xml'
+    def calculate_quality(self, build_tool):
+        self.setup_reports(build_tool)
+
+        qualityMetrics = QualityMetrics()
+        qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code()
+        qualityMetrics.code_smell_score = self.calculate_code_smells()
+        return qualityMetrics
+
+    def setup_reports(self, build_tool):
+        if build_tool == BuildTool.MAVEN:
+            os.system('mvn pmd:pmd')
+            os.system('mvn pmd:cpd')
+            self.pmd_report = './target/reports/pmd/pmd.xml'
+            self.cpd_report = './target/reports/pmd/cpd.xml'
+        elif build_tool == BuildTool.GRADLE:
+            os.system('./gradlew pmdMain')
+            os.system('./gradlew cpdCheck')
+            self.pmd_report = './build/reports/pmd/main.xml'
+            self.cpd_report = './build/reports/cpd/cpdCheck.xml'
 
     def calculate_duplicate_code(self):
-        self.set_variables()
         tree = ET.parse(self.cpd_report)
         root = tree.getroot()
         non_duplication_score = 100
@@ -27,7 +41,6 @@ class Quality:
         return non_duplication_score
 
     def calculate_code_smells(self):
-        self.set_variables()
         tree = ET.parse(self.pmd_report)
         root = tree.getroot()
         total_issues = 0
@@ -66,17 +79,6 @@ class Quality:
         print('------------------------------')
 
         return 100 - code_smells_ratio
-
-    def calculate_quality(self):
-        self.set_variables()
-
-        os.system('./gradlew pmdMain')
-        os.system('./gradlew cpdCheck')
-
-        qualityMetrics = QualityMetrics()
-        qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code()
-        qualityMetrics.code_smell_score = self.calculate_code_smells()
-        return qualityMetrics
 
 class QualityMetrics:
     def __init__(self):
