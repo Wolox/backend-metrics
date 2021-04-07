@@ -12,7 +12,7 @@ class CoverageMetricsHelper:
 
     def setup_reports(self, build_tool):
         if build_tool == BuildTool.MAVEN:
-            os.system('mvn test')
+            os.system('./mvnw test')
             coverage_report_path = './target/reports/jacoco/jacoco.xml'
         elif build_tool == BuildTool.GRADLE:
             os.system('./gradlew test')
