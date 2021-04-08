@@ -15,7 +15,7 @@ parser.add_argument("--repository", "-r", help = "Repository name")
 parser.add_argument("--project_name", "-p", help = "Project name")
 parser.add_argument("--key", "-k", help = "Metrics API Key")
 
-args = parser.parse_args()
+args, unknown = parser.parse_known_args()
 
 metrics_url = args.metrics_url
 metrics_url = "https://backendmetrics.engineering.wolox.com.ar/metrics" if metrics_url is None else metrics_url
