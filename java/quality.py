@@ -16,8 +16,8 @@ class Quality:
 
     def setup_reports(self, build_tool):
         if build_tool == BuildTool.MAVEN:
-            os.system('mvn pmd:pmd')
-            os.system('mvn pmd:cpd')
+            os.system('./mvnw pmd:pmd')
+            os.system('./mvnw pmd:cpd')
             self.pmd_report = './target/reports/pmd/pmd.xml'
             self.cpd_report = './target/reports/pmd/cpd.xml'
         elif build_tool == BuildTool.GRADLE:
