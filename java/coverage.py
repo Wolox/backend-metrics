@@ -3,21 +3,21 @@ import xml.etree.ElementTree as ET
 from build_tools import BuildTool
 
 class CoverageMetricsHelper:
-    def calculate_code_coverage(self,build_tool):
-        metrics = self.setup_reports(build_tool)
+    def calculate_code_coverage(self, build_tool, repo_path, wrapper_path_cd_command):
+        metrics = self.setup_reports(build_tool, repo_path, wrapper_path_cd_command)
         metrics.code_coverage = (metrics.conditions_to_cover - metrics.uncovered_conditions + metrics.lc) \
             / (metrics.conditions_to_cover + metrics.lines_to_cover) * 100
         print('Code coverage ratio: ' + str(round(metrics.code_coverage, 2)) + "%")
         return metrics
 
-    def setup_reports(self, build_tool):
+    def setup_reports(self, build_tool, repo_path, wrapper_path_cd_command):
         if build_tool == BuildTool.MAVEN:
-            os.system('./mvnw test')
-            coverage_report_path = './target/reports/jacoco/jacoco.xml'
+            os.system(wrapper_path_cd_command + './mvnw test')
+            coverage_report_path = repo_path +  '/target/reports/jacoco/jacoco.xml'
         elif build_tool == BuildTool.GRADLE:
-            os.system('./gradlew test')
-            os.system('./gradlew jacocoTestReport')
-            coverage_report_path = './build/reports/jacoco/test/jacocoTestReport.xml'
+            os.system(wrapper_path_cd_command + './gradlew test')
+            os.system(wrapper_path_cd_command + './gradlew jacocoTestReport')
+            coverage_report_path = repo_path + '/build/reports/jacoco/test/jacocoTestReport.xml'
             
         tree = ET.parse(coverage_report_path)
         root = tree.getroot()

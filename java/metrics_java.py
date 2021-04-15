@@ -14,6 +14,7 @@ parser.add_argument("--env", "-b", help = "Environment")
 parser.add_argument("--repository", "-r", help = "Repository name")
 parser.add_argument("--project_name", "-p", help = "Project name")
 parser.add_argument("--key", "-k", help = "Metrics API Key")
+parser.add_argument("--repo_path", "-d", help = "Repository Path")
 
 args, unknown = parser.parse_known_args()
 
@@ -32,14 +33,18 @@ api_key = "" if api_key is None else api_key
 repository = args.repository
 project_name = args.project_name
 
-build_tool = BuildTool.MAVEN if 'pom.xml' in os.listdir() else BuildTool.GRADLE
+repo_path = args.repo_path
+repo_path = "./" if repo_path is None else repo_path
+
+build_tool = BuildTool.MAVEN if 'pom.xml' in os.listdir(repo_path) else BuildTool.GRADLE
+wrapper_path_cd_command = 'cd {} && '.format(repo_path)
 
 
 # Calculate metrics
 
-coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool)
-dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(build_tool)
-quality_metrics = Quality(coverage_metrics.total_lines_code).calculate_quality(build_tool)
+coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool, repo_path, wrapper_path_cd_command)
+dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(build_tool, repo_path, wrapper_path_cd_command)
+quality_metrics = Quality(coverage_metrics.total_lines_code).calculate_quality(build_tool, repo_path, wrapper_path_cd_command)
 
 # Send request to server
 
@@ -80,3 +85,6 @@ print('Sending metrics to server:\n')
 print(body)
 
 x = requests.post(metrics_url, json = body, headers = headers)
+
+print('Request Sent')
+print(x.json)

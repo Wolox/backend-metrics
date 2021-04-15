@@ -4,8 +4,8 @@ from build_tools import BuildTool
 
 
 class DependencyMetricsHelper():
-    def calculate_dependencies_metrics(self,build_tool):
-        dependencies = self.get_dependencies(build_tool)
+    def calculate_dependencies_metrics(self, build_tool, repo_path, wrapper_path_cd_command):
+        dependencies = self.get_dependencies(build_tool, repo_path, wrapper_path_cd_command)
         dependency_metrics = DependencyMetrics()
 
         for dependency in dependencies:
@@ -29,13 +29,13 @@ class DependencyMetricsHelper():
 
         return dependency_metrics
 
-    def get_dependencies(self,build_tool):
+    def get_dependencies(self, build_tool, repo_path, wrapper_path_cd_command):
         if build_tool == BuildTool.MAVEN:
-            dependency_output = './target/reports/dependency/dependencies.txt'
-            os.system('./mvnw dependency:tree -DoutputFile="{}"'.format(dependency_output))
+            dependency_output = repo_path + '/target/reports/dependency/dependencies.txt'
+            os.system(wrapper_path_cd_command + './mvnw dependency:tree -DoutputFile="{}"'.format(dependency_output))
             dependencies_tree = open('{}'.format(dependency_output),'r').read()
         elif build_tool == BuildTool.GRADLE:
-            dependencies_tree = os.popen('./gradlew dependencies').read()
+            dependencies_tree = os.popen(wrapper_path_cd_command + './gradlew dependencies').read()
             # remove spaces
             dependencies_tree = dependencies_tree.replace('\n\n', '\n')
 
