@@ -6,24 +6,23 @@ class Quality:
     def __init__(self, lines_of_code):
         self.lines_of_code = lines_of_code
 
-    def calculate_quality(self, build_tool, repo_path):
-        self.setup_reports(build_tool, repo_path)
+    def calculate_quality(self, build_tool, repo_path, wrapper_path_cd_command):
+        self.setup_reports(build_tool, repo_path, wrapper_path_cd_command)
 
         qualityMetrics = QualityMetrics()
         qualityMetrics.duplicated_code_percentage = self.calculate_duplicate_code()
         qualityMetrics.code_smell_score = self.calculate_code_smells()
         return qualityMetrics
 
-    def setup_reports(self, build_tool, repo_path):
-        wrapper_path = 'cd {} && '.format(repo_path)
+    def setup_reports(self, build_tool, repo_path, wrapper_path_cd_command):
         if build_tool == BuildTool.MAVEN:
-            os.system(wrapper_path + './mvnw pmd:pmd')
-            os.system(wrapper_path + './mvnw pmd:cpd')
+            os.system(wrapper_path_cd_command + './mvnw pmd:pmd')
+            os.system(wrapper_path_cd_command + './mvnw pmd:cpd')
             self.pmd_report = repo_path + '/target/reports/pmd/pmd.xml'
             self.cpd_report = repo_path + '/target/reports/pmd/cpd.xml'
         elif build_tool == BuildTool.GRADLE:
-            os.system(wrapper_path + './gradlew pmdMain')
-            os.system(wrapper_path + './gradlew cpdCheck')
+            os.system(wrapper_path_cd_command + './gradlew pmdMain')
+            os.system(wrapper_path_cd_command + './gradlew cpdCheck')
             self.pmd_report = repo_path + '/build/reports/pmd/main.xml'
             self.cpd_report = repo_path + '/build/reports/cpd/cpdCheck.xml'
 

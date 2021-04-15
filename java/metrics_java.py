@@ -37,12 +37,14 @@ repo_path = args.repo_path
 repo_path = "./" if repo_path is None else repo_path
 
 build_tool = BuildTool.MAVEN if 'pom.xml' in os.listdir(repo_path) else BuildTool.GRADLE
+wrapper_path_cd_command = 'cd {} && '.format(repo_path)
+
 
 # Calculate metrics
 
-coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool, repo_path)
-dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(build_tool, repo_path)
-quality_metrics = Quality(coverage_metrics.total_lines_code).calculate_quality(build_tool, repo_path)
+coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool, repo_path, wrapper_path_cd_command)
+dependency_metric = DependencyMetricsHelper().calculate_dependencies_metrics(build_tool, repo_path, wrapper_path_cd_command)
+quality_metrics = Quality(coverage_metrics.total_lines_code).calculate_quality(build_tool, repo_path, wrapper_path_cd_command)
 
 # Send request to server
 
@@ -83,3 +85,6 @@ print('Sending metrics to server:\n')
 print(body)
 
 x = requests.post(metrics_url, json = body, headers = headers)
+
+print('Request Sent')
+print(x.json)
