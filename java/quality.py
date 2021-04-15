@@ -15,14 +15,15 @@ class Quality:
         return qualityMetrics
 
     def setup_reports(self, build_tool, repo_path):
+        wrapper_path = 'cd {} && '.format(repo_path)
         if build_tool == BuildTool.MAVEN:
-            os.system(repo_path + '/mvnw pmd:pmd')
-            os.system(repo_path + '/mvnw pmd:cpd')
+            os.system(wrapper_path + './mvnw pmd:pmd')
+            os.system(wrapper_path + './mvnw pmd:cpd')
             self.pmd_report = repo_path + '/target/reports/pmd/pmd.xml'
             self.cpd_report = repo_path + '/target/reports/pmd/cpd.xml'
         elif build_tool == BuildTool.GRADLE:
-            os.system(repo_path + '/gradlew pmdMain')
-            os.system(repo_path + '/gradlew cpdCheck')
+            os.system(wrapper_path + './gradlew pmdMain')
+            os.system(wrapper_path + './gradlew cpdCheck')
             self.pmd_report = repo_path + '/build/reports/pmd/main.xml'
             self.cpd_report = repo_path + '/build/reports/cpd/cpdCheck.xml'
 

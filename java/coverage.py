@@ -11,12 +11,13 @@ class CoverageMetricsHelper:
         return metrics
 
     def setup_reports(self, build_tool, repo_path):
+        wrapper_path = 'cd {} && '.format(repo_path)
         if build_tool == BuildTool.MAVEN:
-            os.system(repo_path + '/mvnw test')
+            os.system(wrapper_path + './mvnw test')
             coverage_report_path = repo_path +  '/target/reports/jacoco/jacoco.xml'
         elif build_tool == BuildTool.GRADLE:
-            os.system(repo_path + '/gradlew test')
-            os.system(repo_path + '/gradlew jacocoTestReport')
+            os.system(wrapper_path + './gradlew test')
+            os.system(wrapper_path + './gradlew jacocoTestReport')
             coverage_report_path = repo_path + '/build/reports/jacoco/test/jacocoTestReport.xml'
             
         tree = ET.parse(coverage_report_path)

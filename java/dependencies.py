@@ -30,12 +30,13 @@ class DependencyMetricsHelper():
         return dependency_metrics
 
     def get_dependencies(self, build_tool, repo_path):
+        wrapper_path = 'cd {} && '.format(repo_path)
         if build_tool == BuildTool.MAVEN:
             dependency_output = repo_path + '/target/reports/dependency/dependencies.txt'
-            os.system(repo_path + '/mvnw dependency:tree -DoutputFile="{}"'.format(dependency_output))
+            os.system(wrapper_path + './mvnw dependency:tree -DoutputFile="{}"'.format(dependency_output))
             dependencies_tree = open('{}'.format(dependency_output),'r').read()
         elif build_tool == BuildTool.GRADLE:
-            dependencies_tree = os.popen(repo_path + '/gradlew dependencies').read()
+            dependencies_tree = os.popen(wrapper_path + './gradlew dependencies').read()
             # remove spaces
             dependencies_tree = dependencies_tree.replace('\n\n', '\n')
 

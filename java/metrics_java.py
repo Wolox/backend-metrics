@@ -38,7 +38,6 @@ repo_path = "./" if repo_path is None else repo_path
 
 build_tool = BuildTool.MAVEN if 'pom.xml' in os.listdir(repo_path) else BuildTool.GRADLE
 
-
 # Calculate metrics
 
 coverage_metrics = CoverageMetricsHelper().calculate_code_coverage(build_tool, repo_path)
