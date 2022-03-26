@@ -13,7 +13,7 @@
     "bluebird": "^3.7.2",
     "elastic-apm-client": "../elastic_apm_client",
     "jsinspect": "^0.12.7",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "npm-check": "^5.9.0",
     "patch-package": "^6.2.1",
     "request": "^2.88.2",
